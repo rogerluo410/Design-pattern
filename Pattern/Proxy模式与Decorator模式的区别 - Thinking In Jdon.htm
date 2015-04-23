@@ -1,0 +1,1622 @@
+ 
+
+
+
+
+
+
+  
+  
+
+  
+    
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>
+
+  Proxy模式与Decorator模式的区别
+ - Thinking In Jdon
+</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+<!--  友好baidu搜索  -->
+
+<meta http-equiv="mobile-agent" content="format=xhtml; url=http://www.jdon.com/mobile/26673" />
+<meta http-equiv="refresh" content="1800"/>
+<link href="/forum/css/mList_css.jsp" rel="stylesheet" type="text/css" />
+<script type="text/javascript">
+ if(top !== self) top.location = self.location;
+ if ((screen.width<1024) && (screen.height<768))	
+	window.location ="http://www.jdon.com/mobile/26673";
+</script>
+
+<script>
+   var isLogin = false; 
+</script>
+<script>   isLogin = false;</script>
+    
+
+
+
+           
+
+
+
+
+</head>
+
+ 
+
+
+
+<body bgcolor="#FFFFFF" >
+<table width="971" border="0" cellpadding="0" cellspacing="2" align="center"  bgcolor="#FFFFFF"><tr><td></td></tr></table>
+
+<table width="971" border="0" cellpadding="0" cellspacing="0" align="center">
+  <tr bgcolor="#FFFFFF">
+    <td width="120"  rowspan="2"    >
+    	<a href="http://www.jdon.com" class="site-logo"><img src='/images/jdon.gif' width="120" height="60" alt="JiveJdon Community Forums" border="0" /></a>
+    <td  align="right">
+    <div class="userbox">                
+
+<font color="#555555" id="loggedInfo">
+
+ </font>
+
+  <span class="smallgray">
+  <a href="javascript:void(0);"  onMouseOver="loadWLJS(onlinesInf)" >在线</a> 
+  </span>
+
+  &nbsp;&nbsp;<a href="/threads">主题</a>
+  &nbsp;&nbsp;<a href="/messages">评论</a>
+  &nbsp;&nbsp;<a href="/approval">推荐</a>  
+  &nbsp;&nbsp;<a href="/tags">标签</a>
+  &nbsp;&nbsp;<a href="/authors">用户</a>  
+  &nbsp;&nbsp;<a href="/query/threadViewQuery.shtml">查搜</a>
+
+
+  &nbsp;&nbsp;<a href="/account/newAccountForm.shtml">注册</a>
+
+
+  
+  &nbsp;&nbsp;<a href="javascript:void(0);" onclick='loadWLJS(loginW)'>登陆 </a>    
+
+              
+
+                  
+       
+
+&nbsp;&nbsp;<a href="/forum/post.jsp"  >发帖</a>
+
+&nbsp;&nbsp;<a href="http://www.jdon.com/followus.html"  >关注</a>
+
+</div>
+
+
+</td>
+  </tr>
+  <tr>
+    <td>
+     <table cellpadding="0" cellspacing="1" bgcolor="#ffffff" width="100%">
+        <tr >
+          <td height="26" bgcolor="#6e155f">&nbsp;</td>
+          <td height="26" align="center" bgcolor="#E671B8"  width="100" ><a href="http://www.jdon.com/designpatterns/" target="_blank" class="a03">设计模式</a></td>
+          <td height="26" align="center" bgcolor="#996600"  width="100" ><a href="http://www.jdon.com/ddd.html" target="_blank" class="a03">领域驱动设计</a></td>
+          <td height="26" align="center" bgcolor="#8CBF26"  width="100" ><a href="http://www.jdon.com/design.htm" target="_blank" class="a03">云架构</a></td>          
+          <td height="26" align="center" bgcolor="#00ABA9"  width="100" ><a href="http://www.jdon.com/jdonframework/" target="_blank" class="a03">开源框架</a></td>
+          <td height="26" align="center" bgcolor="#339933"  width="100" ><a href="http://www.jdon.com/consultant.html" target="_blank" class="a03">培训咨询</a></td>
+          <td height="26" align="center" bgcolor="#3e6d8e"  width="100" ><a href="http://www.jdon.com/threads" target="_blank"  class="a03">社区主题</a></td>
+          
+        </tr>
+      </table>
+      </td>
+  </tr>
+</table>
+
+<table width="971" border="0" cellspacing="0" cellpadding="0"  align="center" height="2"  bgcolor="#F97D0D">
+  <tr>
+    <td></td>
+  </tr>
+</table>
+
+   
+
+
+<script>
+var loggedURL = '/account/protected/logged.jsp';
+</script>
+<script src="/account/js/login.js"></script>
+
+<input type="hidden" id="contextPath"  name="contextPath" value="" >
+<div id="loginAJAX" style="display:none" align="center">
+ <div class="tooltip_content">
+  <span id='login_error_msg' class="login_error" style="display:none">&nbsp;</span>
+      <table border="0" cellpadding="0" cellspacing="2">
+  <tr>
+    <td> 用户 </td>
+    <td width="8">&nbsp;</td>
+    <td><input type="text" name="j_username" size="22" tabindex="1" id="j_username" value="">
+    </td>
+    <td width="8">&nbsp;</td>
+    <td><table border="0" cellpadding="0" cellspacing="0">
+      <tr>
+        <td>自动登陆 </td>
+        <td align="right"><input type="checkbox" name="rememberMe"  id="rememberMe" checked="checked">
+        </td>
+      </tr>
+    </table></td>
+  </tr>
+  <tr>
+    <td>密码 </td>
+    <td width="10">&nbsp;</td>
+    <td><input type="password" name="j_password" size="22" tabindex="2" id="j_password" value="">
+    </td>
+    <td width="10">&nbsp;</td>
+    <td> </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="5">
+	<a href="/account/newAccountForm.shtml"  target="_blank" >
+                          新用户注册
+                    </a>
+                    <a href="/account/forgetPasswd.jsp" target="_blank">
+                          忘记密码?
+                    </a>
+	     </td></tr>
+  <tr>
+    <td align="center" colspan="5">
+	<a href="/account/oauth/sinaCallAction.shtml"  target="_blank" >
+                          <img src='/images/sina.png' width="13" height="13" alt="登录" border="0" />新浪微博
+                    </a>
+    <a href="/account/oauth/tecentCallAction.shtml" target="_blank">
+                          <img src='/images/qq.gif' width="13" height="13" alt="登录" border="0" />腾讯微博
+                    </a>
+    <a href="/account/oauth/googleCallAction.shtml" target="_blank">
+                          <img src='/images/google.gif' width="16" height="16" alt="登录" border="0" />Google
+                    </a>                    
+                    
+	     </td></tr>
+	     
+      </table>    
+</div>      
+  </div> 
+
+
+<script>
+autoCompleteLogin();
+</script>
+
+
+
+ 
+ 
+
+
+
+   
+<!-- Support for non-traditional but simple message -->
+
+
+<!-- Support for non-traditional but simpler use of errors... -->
+
+<center></center>
+
+ 
+<meta name="keywords" content='
+
+  decorator装饰模式,
+
+  Proxy代理模式,
+
+  设计模式,
+'/>
+
+<!-- 导航区  -->
+
+<table cellpadding="0" cellspacing="0" border="0" width="971" align="center">
+<tr>
+    <td width="1%" nowrap>
+     <b>
+    <a href="http://www.jdon.com/"
+    >首页</a>
+    &raquo;
+    <a href="/forum/" title="返回论坛列表">论坛</a>
+    &raquo;
+    
+    <a href="/forum/91">  
+            设计模式、框架和架构
+    </a>
+    
+    </b>
+    
+    </td>    
+    <td width="98%" align="center">
+
+       
+<table><tr><td>       
+
+<div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+            <a class="bds_qzone"></a>
+            <a class="bds_tsina"></a>
+            <a class="bds_tqq"></a>
+            <a class="bds_renren"></a>
+            <span class="bds_more">更多</span>
+</div>
+</td></tr></table>       
+       
+    </td>
+     <form action="/query/searchAction.shtml"  method="post" target="_blank" id="searchtForm" >    
+     <td width="1%" nowrap>   
+     <input type="text"  name="query" size="25" id="queryId"  onfocus="javascript:loadAcJS(this.id)"/>
+         <input type="image"  align="absmiddle" height="16" width="16" name="..." src="/images/search.gif" onclick="document.searchtForm.submit()"/>
+    </td>
+     </form>   
+ </tr>
+</table>
+ 
+<table cellpadding="0" cellspacing="0" border="0" width="971" align="center">
+<tr>
+    <td width="1%" nowrap>
+      
+    </td>
+    <td width="98%" align="center">
+    </td>
+    <td width="1%" nowrap>
+
+<div class="tres">
+
+</a>
+<b><span class="paginator_currentPage">1</span></b>&nbsp;<a href="/26673/5" class="paginator_href"><b>2</b></a>&nbsp;<a href="/26673/10" class="paginator_href"><b>3</b></a>
+<a href="/26673/5" > 下一页 </a>
+
+
+<a href="JavaScript:void(0);"  onmouseover="loadWLJSWithP(this, initTooltipWL)" class="tooltip html_tooltip_content_go">Go</a>
+有<b>3</b>页
+    
+
+</div>     
+<div id="tooltip_content_go"  style="display:none">
+<div class="tooltip_content">
+  <div class="title">前往下页:</div>
+	<div class="form">
+		<input type="text" style="width: 50px;" id="pageToGo">
+		<input type="button" value=" Go "
+		 onClick="goToAnotherPageREST('/26673',
+		 5);" />				
+	</div>
+  </div>  
+</div>  
+
+</div>
+
+
+    </td>
+</tr>
+</table>
+
+
+
+
+
+<div id="messageListBody" >
+
+
+
+
+<div class="table-entice">
+<div class="table-button">   
+
+<div class="table-button-left">   
+<a href='/message/messageAction.shtml?forum.forumId=91'   rel='nofollow' >
+ <img src="/images/newtopic.gif" height="20" width="110" border="0" alt="发表新帖子"></a>
+<a href="javascript:void(0);" onClick="loadWLJSWithP('17114242',loadWPostjs)" >
+ <img src="/images/replytopic.gif" height="20" width="110" border="0" alt="回复该主题贴"></a>  
+</div>
+    	
+<div class="table-button-right">       	
+<div class="box1"> 
+<a title="网上收藏本主题" href="JavaScript:void(0);" onMouseOver="loadWLJS(mark)" >&nbsp;&nbsp;</a>
+</div>
+<div class="box2"">
+<a title="手机条码扫描浏览本页" href="JavaScript:void(0);" onmouseover='loadWLJS(qtCode("26673"))'  >&nbsp;&nbsp;</a>
+</div>
+<div class="box3">
+<a title="关注本主题" href="/account/protected/sub/subAction.shtml?subscribeType=1&subscribeId=26673"  rel="nofollow">&nbsp;&nbsp;</a>
+</div>
+<div class="box4">
+<a title="加入本帖到收藏夹" href="JavaScript:void(0);" onClick="addfavorite('Proxy模式与Decorator模式的区别')" >&nbsp;&nbsp;</a>
+</div>
+阅读<span id="viewcount">1827</span>次 
+
+    
+</div>    
+
+
+      
+ </div>  
+</div>
+
+<div class="post_all">
+
+ 
+
+
+<a name="17114242"></a>
+ 
+       
+     	
+<div class="post_warp">
+  <div class="post_sidebar">
+	<div class="post_author">	   
+     
+       <div class="post_authorin">
+       	  
+          <span onmouseover="loadWLJSWithP(this, initUsersW)"  class='Users ajax_userId=4174' id="users" >                      
+              <span  id='author_17114242'>tomsonxu
+            </span>                                     
+            <br>
+            <br>
+           
+         <a href='/blog/tomsonxu'>          
+           
+           </span>           
+		  <br/>
+         </a>	
+          	  
+           <span class="smallgray"> 文章:
+              
+                 3
+              
+           </span>
+                     
+            <br>
+           <span class="smallgray"> 注册: 2002-12-02 </span>
+           <br>
+         
+         
+         <div id="divname">
+         <ul class="link">
+            <li class="box21">
+            <span  class="smallgray">            
+            <span id="messageOwnerOnline_17114242"></span>                        
+                                  
+             
+
+
+
+
+
+当前离线
+
+         
+             </span>     
+            </li>
+            
+            <li class="box22"">
+             <a href="/account/protected/sub/subAction.shtml?subscribeType=3&subscribeId=4174"
+                target="_blank" title="我要关注该作者发言"  rel="nofollow">    
+              <span class="smallgray">          
+              
+              
+                            关注他
+              
+              </span>
+              </a></li>
+                                      
+             <li class="box23">         
+             
+             <a href="javascript:void(0);" onclick="loadWLJSWithP('/account/protected/shortmessageAction.shtml?messageTo=tomsonxu', openShortmessageWindow);" rel="nofollow">          
+             <span class="smallgray">悄悄话</span>
+              </a>
+             </li>     
+
+            <li class="box24">            
+            <a href="/blog/tomsonxu" >
+            <span class="smallgray">个人博客</span>
+            </a>
+            </li>   
+         </ul>
+        </div>
+                        
+             
+         
+         </div>
+       </div>
+     </div>
+
+ <div class="post_header">
+	 <div class="post_title">	  
+	   
+	   <div class="post_titlename">
+	     <h3><span id='subject_17114242'>Proxy模式与Decorator模式的区别</span></h3>
+       </div>	     	     
+	   
+	   
+      
+      <div nowrap="" class="post_titledate">
+        <span class="smallgray" id='creationDate_17114242'>2006-05-11 15:09</span>
+      </div>
+      
+	  <div nowrap="" align="center" class="post_titleright">
+         
+         
+                        
+                             
+          
+          
+       
+       <span class="box11">                         
+       
+             <a title="到本帖网址" href='/26673'>                    
+       
+                                        
+       &nbsp;&nbsp;</a>
+       </span>
+       <span class="box12""><a  href="javascript:void(0);" onclick="loadWLJSWithP('17114242',loadWPostjs)">&nbsp;&nbsp;</a>
+        </span>
+       <span class="box13"><a  href="javascript:void(0);" onclick="loadWLJSWithP('17114242',loadQPostjs)">&nbsp;&nbsp;</a>
+        </span>
+               
+     </div>
+     
+     
+     	<div  class="post_titleright2">
+<DIV class=digg-row>
+<SPAN class=diggArea>	
+  <DIV class=diggNum id="digNumber_17114242">
+  
+  </DIV>
+  <DIV class="diggLink top8" id="textArea_17114242"><a href="javascript:digMessage('17114242')">顶</a></DIV> 	
+</SPAN>
+</DIV>
+      </div>
+     
+
+        
+      <div class="post_titletag">    
+        <a href="/query/tagsList.shtml?count=150" target="_blank" title="标签"><img src="/images/tag_yellow.png" height="16" width="16" border="0" alt="标签"></a>
+        
+           <span  onmouseover="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=1370' >
+           <a href='/tags/1370' target="_blank" class="post-tag">
+             decorator装饰模式
+           </a>
+            </span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+           <span  onmouseover="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=796' >
+           <a href='/tags/796' target="_blank" class="post-tag">
+             Proxy代理模式
+           </a>
+            </span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+           <span  onmouseover="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=324' >
+           <a href='/tags/324' target="_blank" class="post-tag">
+             设计模式
+           </a>
+            </span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+         
+             
+      </div>    
+         
+     
+    
+   <div class="gen-2"></div>
+  </div>
+  </div>  
+  <div class="post_body">
+	<div class="post_bodyin">
+			
+<div class="post_body_content">
+
+<h1 class="tpc_content" id='body_17114242'>看了一篇文章（http://www.javaworld.com/javaworld/jw-02-2002/jw-0222-designpatterns.html）说到：<BR><BR>两个模式比较相似，因为Both patterns use a proxy that forwards method calls to another object, known as the real subject.<BR><BR>两模式的不同之处在于：with the Proxy pattern, the relationship between a proxy and the real subject is typically set at compile time, whereas decorators can be recursively constructed at runtime。<BR><BR>不是很能理解上面所说的不同之处，请各位指教（最好可以举例说明）。谢谢。</h1>
+
+              
+</div>
+<div class="advert">
+   
+
+
+
+
+
+
+
+
+  
+     
+     <script type="text/javascript"><!--
+google_ad_client = "ca-pub-7573657117119544";
+/* 728x90 */
+google_ad_slot = "2340228034";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+
+     
+     
+          
+     
+     
+ 
+
+ 
+
+
+
+
+
+
+
+</div>
+
+<br>
+   </div>
+ <div class="gen-2"></div>
+ </div>							
+ <div class="gen-2"></div>
+ </div>
+             
+
+ 
+
+
+<a name="17170434"></a>
+      	
+<div class="post_warp">
+  <div class="post_sidebar">
+	<div class="post_author">	   
+     
+       <div class="post_authorin">
+       	  
+          <span onmouseover="loadWLJSWithP(this, initUsersW)"  class='Users ajax_userId=2' id="users" >                      
+              <span  id='author_17170434'>banq
+            </span>                                     
+            <br>
+            <br>
+           
+         <a href='/blog/banq'>          
+           
+             
+               <img  src="/img/accountFaceShowAction.shtml?oid=2"  border='0' class="post_author_pic" />
+            
+            
+                                                
+           
+           </span>           
+		  <br/>
+         </a>	
+          	  
+           <span class="smallgray"> 文章:
+              
+                 13235
+              
+           </span>
+                     
+            <br>
+           <span class="smallgray"> 注册: 2002-08-03 </span>
+           <br>
+         
+         
+         <div id="divname">
+         <ul class="link">
+            <li class="box21">
+            <span  class="smallgray">            
+            <span id="messageOwnerOnline_17170434"></span>                        
+                                  
+             
+
+
+
+
+
+当前离线
+
+         
+             </span>     
+            </li>
+            
+            <li class="box22"">
+             <a href="/account/protected/sub/subAction.shtml?subscribeType=3&subscribeId=2"
+                target="_blank" title="我要关注该作者发言"  rel="nofollow">    
+              <span class="smallgray">          
+              
+                 253人关注
+              
+              
+              </span>
+              </a></li>
+                                      
+             <li class="box23">         
+             
+             <a href="javascript:void(0);" onclick="loadWLJSWithP('/account/protected/shortmessageAction.shtml?messageTo=banq', openShortmessageWindow);" rel="nofollow">          
+             <span class="smallgray">悄悄话</span>
+              </a>
+             </li>     
+
+            <li class="box24">            
+            <a href="/blog/banq" >
+            <span class="smallgray">个人博客</span>
+            </a>
+            </li>   
+         </ul>
+        </div>
+                        
+             
+         
+         </div>
+       </div>
+     </div>
+
+ <div class="post_header">
+	 <div class="post_title">	  
+	   
+	   
+	   <div class="post_titlename">
+	     <span id='subject_17170434'>Re: Proxy模式与Decorator模式的区别</span>
+        </div>	     
+	   
+      
+      <div nowrap="" class="post_titledate">
+        <span class="smallgray" id='creationDate_17170434'>2006-05-13 17:57</span>
+      </div>
+      
+	  <div nowrap="" align="center" class="post_titleright">
+         
+         
+                        
+                             
+          
+          
+       
+       <span class="box11">                         
+       
+       
+             <a title="到本帖网址" href='/nav/26673/17170434#17170434'  rel="nofollow"> 
+                                        
+       &nbsp;&nbsp;</a>
+       </span>
+       <span class="box12""><a  href="javascript:void(0);" onclick="loadWLJSWithP('17170434',loadWPostjs)">&nbsp;&nbsp;</a>
+        </span>
+       <span class="box13"><a  href="javascript:void(0);" onclick="loadWLJSWithP('17170434',loadQPostjs)">&nbsp;&nbsp;</a>
+        </span>
+               
+     </div>
+     
+     
+     	<div  class="post_titleright2">
+<DIV class=digg-row>
+<SPAN class=diggArea>	
+  <DIV class=diggNum id="digNumber_17170434">
+  
+  </DIV>
+  <DIV class="diggLink top8" id="textArea_17170434"><a href="javascript:digMessage('17170434')">顶</a></DIV> 	
+</SPAN>
+</DIV>
+      </div>
+     
+
+        
+     
+    
+   <div class="gen-2"></div>
+  </div>
+  </div>  
+  <div class="post_body">
+	<div class="post_bodyin">
+			
+<div class="post_body_content">
+
+<h1 class="tpc_content" id='body_17170434'>proxy模式和decorator模式都是处理两个类的关系，所不同的是两者关系在何时被建立，英文意思说：proxy模式是在编译时建立关系；而decorator模式则可以在运行时构建。<BR><BR>如果我没有理解错的话：老外视图从编译或运行两者语言状态来描述两者区别，我不敢苟同。<BR><BR>我个人认为：应该从业务应用场景来看待两者区别，而不是拘泥于类关系的如何实现上，不同模式区别都是因为关注点不同，Proxy模式关注的代理两个字，是类的代理，也就是一个类的整体代理，一个原始类可能有多个方法，使用代理类，就要尽量对原始类大部分方法从同一个功能触发进行代理，比如权限代理，进而可以发展到动态代理以及AOP。<BR><BR>而Decorator则侧重于增加职责，至于为一个类多个方法增加的职责是否统一不是其关心的，可能不同方法不同职责。</h1>
+
+              
+</div>
+<div class="advert">
+   
+
+
+
+
+
+
+
+
+  
+     
+     
+     <!-- 广告位：横幅轮换 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "353517";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+         
+     
+          
+     
+     
+ 
+
+ 
+
+
+
+
+
+
+
+</div>
+
+<br>
+   </div>
+ <div class="gen-2"></div>
+ </div>							
+ <div class="gen-2"></div>
+ </div>
+             
+
+ 
+
+
+<a name="17170465"></a>
+      	
+<div class="post_warp">
+  <div class="post_sidebar">
+	<div class="post_author">	   
+     
+       <div class="post_authorin">
+       	  
+          <span onmouseover="loadWLJSWithP(this, initUsersW)"  class='Users ajax_userId=2' id="users" >                      
+              <span  id='author_17170465'>banq
+            </span>                                     
+            <br>
+            <br>
+           
+         <a href='/blog/banq'>          
+           
+             
+               <img  src="/img/accountFaceShowAction.shtml?oid=2"  border='0' class="post_author_pic" />
+            
+            
+                                                
+           
+           </span>           
+		  <br/>
+         </a>	
+          	  
+           <span class="smallgray"> 文章:
+              
+                 13235
+              
+           </span>
+                     
+            <br>
+           <span class="smallgray"> 注册: 2002-08-03 </span>
+           <br>
+         
+         
+         <div id="divname">
+         <ul class="link">
+            <li class="box21">
+            <span  class="smallgray">            
+            <span id="messageOwnerOnline_17170465"></span>                        
+                                  
+             
+
+
+
+
+
+当前离线
+
+         
+             </span>     
+            </li>
+            
+            <li class="box22"">
+             <a href="/account/protected/sub/subAction.shtml?subscribeType=3&subscribeId=2"
+                target="_blank" title="我要关注该作者发言"  rel="nofollow">    
+              <span class="smallgray">          
+              
+                 253人关注
+              
+              
+              </span>
+              </a></li>
+                                      
+             <li class="box23">         
+             
+             <a href="javascript:void(0);" onclick="loadWLJSWithP('/account/protected/shortmessageAction.shtml?messageTo=banq', openShortmessageWindow);" rel="nofollow">          
+             <span class="smallgray">悄悄话</span>
+              </a>
+             </li>     
+
+            <li class="box24">            
+            <a href="/blog/banq" >
+            <span class="smallgray">个人博客</span>
+            </a>
+            </li>   
+         </ul>
+        </div>
+                        
+             
+         
+         </div>
+       </div>
+     </div>
+
+ <div class="post_header">
+	 <div class="post_title">	  
+	   
+	   
+	   <div class="post_titlename">
+	     <span id='subject_17170465'>Re: Proxy模式与Decorator模式的区别</span>
+        </div>	     
+	   
+      
+      <div nowrap="" class="post_titledate">
+        <span class="smallgray" id='creationDate_17170465'>2006-05-13 17:58</span>
+      </div>
+      
+	  <div nowrap="" align="center" class="post_titleright">
+         
+         
+                        
+                             
+          
+          
+       
+       <span class="box11">                         
+       
+       
+             <a title="到本帖网址" href='/nav/26673/17170465#17170465'  rel="nofollow"> 
+                                        
+       &nbsp;&nbsp;</a>
+       </span>
+       <span class="box12""><a  href="javascript:void(0);" onclick="loadWLJSWithP('17170465',loadWPostjs)">&nbsp;&nbsp;</a>
+        </span>
+       <span class="box13"><a  href="javascript:void(0);" onclick="loadWLJSWithP('17170465',loadQPostjs)">&nbsp;&nbsp;</a>
+        </span>
+               
+     </div>
+     
+     
+     	<div  class="post_titleright2">
+<DIV class=digg-row>
+<SPAN class=diggArea>	
+  <DIV class=diggNum id="digNumber_17170465">
+  
+  </DIV>
+  <DIV class="diggLink top8" id="textArea_17170465"><a href="javascript:digMessage('17170465')">顶</a></DIV> 	
+</SPAN>
+</DIV>
+      </div>
+     
+
+        
+     
+    
+   <div class="gen-2"></div>
+  </div>
+  </div>  
+  <div class="post_body">
+	<div class="post_bodyin">
+			
+<div class="post_body_content">
+
+<h1 class="tpc_content" id='body_17170465'>相关讨论：<BR><a href ="http://www.jdon.com/jive/thread.jsp?forum=91&thread=26552"  class='body_href' >http://www.jdon.com/jive/thread.jsp?forum=91&thread=26552</a></h1>
+
+              
+</div>
+<div class="advert">
+   
+
+
+
+
+
+
+
+
+  
+     
+     
+     
+     <script type="text/javascript"><!--
+google_ad_client = "ca-pub-7573657117119544";
+/* 728x90 */
+google_ad_slot = "2340228034";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>     
+          
+     
+     
+ 
+
+ 
+
+
+
+
+
+
+
+</div>
+
+<br>
+   </div>
+ <div class="gen-2"></div>
+ </div>							
+ <div class="gen-2"></div>
+ </div>
+             
+
+ 
+
+
+<a name="17185434"></a>
+      	
+<div class="post_warp">
+  <div class="post_sidebar">
+	<div class="post_author">	   
+     
+       <div class="post_authorin">
+       	  
+          <span onmouseover="loadWLJSWithP(this, initUsersW)"  class='Users ajax_userId=10777' id="users" >                      
+              <span  id='author_17185434'>zhuam
+            </span>                                     
+            <br>
+            <br>
+           
+         <a href='/blog/zhuam'>          
+           
+           </span>           
+		  <br/>
+         </a>	
+          	  
+           <span class="smallgray"> 文章:
+              
+                 65
+              
+           </span>
+                     
+            <br>
+           <span class="smallgray"> 注册: 2003-08-31 </span>
+           <br>
+         
+         
+         <div id="divname">
+         <ul class="link">
+            <li class="box21">
+            <span  class="smallgray">            
+            <span id="messageOwnerOnline_17185434"></span>                        
+                                  
+             
+
+
+
+
+
+当前离线
+
+         
+             </span>     
+            </li>
+            
+            <li class="box22"">
+             <a href="/account/protected/sub/subAction.shtml?subscribeType=3&subscribeId=10777"
+                target="_blank" title="我要关注该作者发言"  rel="nofollow">    
+              <span class="smallgray">          
+              
+              
+                            关注他
+              
+              </span>
+              </a></li>
+                                      
+             <li class="box23">         
+             
+             <a href="javascript:void(0);" onclick="loadWLJSWithP('/account/protected/shortmessageAction.shtml?messageTo=zhuam', openShortmessageWindow);" rel="nofollow">          
+             <span class="smallgray">悄悄话</span>
+              </a>
+             </li>     
+
+            <li class="box24">            
+            <a href="/blog/zhuam" >
+            <span class="smallgray">个人博客</span>
+            </a>
+            </li>   
+         </ul>
+        </div>
+                        
+             
+         
+         </div>
+       </div>
+     </div>
+
+ <div class="post_header">
+	 <div class="post_title">	  
+	   
+	   
+	   <div class="post_titlename">
+	     <span id='subject_17185434'>Re: Proxy模式与Decorator模式的区别</span>
+        </div>	     
+	   
+      
+      <div nowrap="" class="post_titledate">
+        <span class="smallgray" id='creationDate_17185434'>2006-05-14 16:29</span>
+      </div>
+      
+	  <div nowrap="" align="center" class="post_titleright">
+         
+         
+                        
+                             
+          
+          
+       
+       <span class="box11">                         
+       
+       
+             <a title="到本帖网址" href='/nav/26673/17185434#17185434'  rel="nofollow"> 
+                                        
+       &nbsp;&nbsp;</a>
+       </span>
+       <span class="box12""><a  href="javascript:void(0);" onclick="loadWLJSWithP('17185434',loadWPostjs)">&nbsp;&nbsp;</a>
+        </span>
+       <span class="box13"><a  href="javascript:void(0);" onclick="loadWLJSWithP('17185434',loadQPostjs)">&nbsp;&nbsp;</a>
+        </span>
+               
+     </div>
+     
+     
+     	<div  class="post_titleright2">
+<DIV class=digg-row>
+<SPAN class=diggArea>	
+  <DIV class=diggNum id="digNumber_17185434">
+  
+  </DIV>
+  <DIV class="diggLink top8" id="textArea_17185434"><a href="javascript:digMessage('17185434')">顶</a></DIV> 	
+</SPAN>
+</DIV>
+      </div>
+     
+
+        
+     
+    
+   <div class="gen-2"></div>
+  </div>
+  </div>  
+  <div class="post_body">
+	<div class="post_bodyin">
+			
+<div class="post_body_content">
+
+<h1 class="tpc_content" id='body_17185434'>嗯， 我同意banq 的观点， proxy 是对类的代理，的确强调的是对已有功能的代理， 而 decorator 我也认为更多的是用于增加装饰，来丰富类的内涵</h1>
+
+              
+</div>
+<div class="advert">
+   
+
+
+
+
+
+
+
+
+  
+     
+     
+          
+     
+<script type="text/javascript"> 
+alimama_pid="mm_10455490_523526_10113915"; 
+alimama_width=728; 
+alimama_height=90; 
+</script> 
+<script src="http://a.alimama.cn/inf.js" type="text/javascript"> 
+</script>
+     
+     
+ 
+
+ 
+
+
+
+
+
+
+
+</div>
+
+<br>
+   </div>
+ <div class="gen-2"></div>
+ </div>							
+ <div class="gen-2"></div>
+ </div>
+             
+
+ 
+
+
+<a name="17185452"></a>
+      	
+<div class="post_warp">
+  <div class="post_sidebar">
+	<div class="post_author">	   
+     
+       <div class="post_authorin">
+       	  
+          <span onmouseover="loadWLJSWithP(this, initUsersW)"  class='Users ajax_userId=10777' id="users" >                      
+              <span  id='author_17185452'>zhuam
+            </span>                                     
+            <br>
+            <br>
+           
+         <a href='/blog/zhuam'>          
+           
+           </span>           
+		  <br/>
+         </a>	
+          	  
+           <span class="smallgray"> 文章:
+              
+                 65
+              
+           </span>
+                     
+            <br>
+           <span class="smallgray"> 注册: 2003-08-31 </span>
+           <br>
+         
+         
+         <div id="divname">
+         <ul class="link">
+            <li class="box21">
+            <span  class="smallgray">            
+            <span id="messageOwnerOnline_17185452"></span>                        
+                                  
+             
+
+
+
+
+
+当前离线
+
+         
+             </span>     
+            </li>
+            
+            <li class="box22"">
+             <a href="/account/protected/sub/subAction.shtml?subscribeType=3&subscribeId=10777"
+                target="_blank" title="我要关注该作者发言"  rel="nofollow">    
+              <span class="smallgray">          
+              
+              
+                            关注他
+              
+              </span>
+              </a></li>
+                                      
+             <li class="box23">         
+             
+             <a href="javascript:void(0);" onclick="loadWLJSWithP('/account/protected/shortmessageAction.shtml?messageTo=zhuam', openShortmessageWindow);" rel="nofollow">          
+             <span class="smallgray">悄悄话</span>
+              </a>
+             </li>     
+
+            <li class="box24">            
+            <a href="/blog/zhuam" >
+            <span class="smallgray">个人博客</span>
+            </a>
+            </li>   
+         </ul>
+        </div>
+                        
+             
+         
+         </div>
+       </div>
+     </div>
+
+ <div class="post_header">
+	 <div class="post_title">	  
+	   
+	   
+	   <div class="post_titlename">
+	     <span id='subject_17185452'>Re: Proxy模式与Decorator模式的区别</span>
+        </div>	     
+	   
+      
+      <div nowrap="" class="post_titledate">
+        <span class="smallgray" id='creationDate_17185452'>2006-05-14 16:32</span>
+      </div>
+      
+	  <div nowrap="" align="center" class="post_titleright">
+         
+         
+                        
+            
+              <span id='authenticated[4]'></span>
+              <script>                                
+              if (document.getElementById("j_username").value == document.getElementById('author_17185452').innerHTML)
+            	  document.getElementById('authenticated[4]').innerHTML = '<a href="/message/messageAction.shtml?action=edit&amp;messageId=17185452">编辑</a>';
+                         			   
+              </script>    
+                            
+          
+          
+       
+       <span class="box11">                         
+       
+       
+             <a title="到本帖网址" href='/nav/26673/17185452#17185452'  rel="nofollow"> 
+                                        
+       &nbsp;&nbsp;</a>
+       </span>
+       <span class="box12""><a  href="javascript:void(0);" onclick="loadWLJSWithP('17185452',loadWPostjs)">&nbsp;&nbsp;</a>
+        </span>
+       <span class="box13"><a  href="javascript:void(0);" onclick="loadWLJSWithP('17185452',loadQPostjs)">&nbsp;&nbsp;</a>
+        </span>
+               
+     </div>
+     
+     
+     	<div  class="post_titleright2">
+<DIV class=digg-row>
+<SPAN class=diggArea>	
+  <DIV class=diggNum id="digNumber_17185452">
+  
+  </DIV>
+  <DIV class="diggLink top8" id="textArea_17185452"><a href="javascript:digMessage('17185452')">顶</a></DIV> 	
+</SPAN>
+</DIV>
+      </div>
+     
+
+        
+     
+    
+   <div class="gen-2"></div>
+  </div>
+  </div>  
+  <div class="post_body">
+	<div class="post_bodyin">
+			
+<div class="post_body_content">
+
+<h1 class="tpc_content" id='body_17185452'>用那种环境去讲解<a href='http://www.jdon.com/designpatterns/'   class='hotkeys ajax_query=设计模式'  id='id_http://www.jdon.com/designpatterns/' ><b>设计模式</b></a>无关紧要，但一定要通俗、易解</h1>
+
+              
+</div>
+<div class="advert">
+   
+
+
+
+
+
+
+
+
+  
+     
+     
+          
+     
+               
+     <script type="text/javascript"><!--
+google_ad_client = "ca-pub-7573657117119544";
+/* 728x90 */
+google_ad_slot = "2340228034";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>     
+
+     
+ 
+
+ 
+
+
+
+
+
+
+
+</div>
+
+<br>
+   </div>
+ <div class="gen-2"></div>
+ </div>							
+ <div class="gen-2"></div>
+ </div>
+             
+
+
+
+  
+<table bgcolor="#cccccc"
+ cellpadding="1" cellspacing="0" border="0" width="931" align="center">
+ <tr bgcolor="#FFFFCC">
+    <td >
+    
+      <table cellpadding="3" cellspacing="0" border="0" width="100%" >
+           <tr>
+             <td>
+
+             </td><td  align="right">
+             <div class="tres">
+
+有<b>3</b>页
+<a href="JavaScript:void(0);"  onmouseover="loadWLJSWithP(this, initTooltipWL)" class="tooltip html_tooltip_content_go">Go</a>
+    
+
+</a>
+<b><span class="paginator_currentPage">1</span></b>&nbsp;<a href="/26673/5" class="paginator_href"><b>2</b></a>&nbsp;<a href="/26673/10" class="paginator_href"><b>3</b></a>
+<a href="/26673/5" > 下一页 </a>
+
+</div>     
+               </td></tr>
+        </table>
+
+</td></tr><tr ><td >
+    <table cellpadding="3" cellspacing="0" border="0" width="100%" height="30"  >
+     <tr><td  align="center">
+        <a href="/query/tagsList.shtml?count=150" target="_blank" title="标签"><img src="/images/tag_yellow.png" height="16" width="16" border="0" alt="标签"></a>
+        
+         <span onMouseOver="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=1370' >
+           <a href='/tags/1370' target="_blank" class="post-tag">
+             decorator装饰模式(21)
+             </a></span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+         <span onMouseOver="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=796' >
+           <a href='/tags/796' target="_blank" class="post-tag">
+             Proxy代理模式(11)
+             </a></span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+         <span onMouseOver="loadWLJSWithP(this, initTagsW)" class='Tags ajax_tagID=324' >
+           <a href='/tags/324' target="_blank" class="post-tag">
+             设计模式(222)
+             </a></span>
+             &nbsp;&nbsp;&nbsp;&nbsp;
+        
+       </td></tr></table>
+    
+</td></tr></table>
+</div>
+</div>
+
+<p></p>
+
+  
+<table align="center">
+<tr><td colspan="2">
+<!--cnzz tui-->
+<script  type="text/javascript" charset="utf-8"  src="http://tui.cnzz.net/cs.php?id=1000026074"></script>
+<!--cnzz tui-->     
+</td></tr>
+<tr><td valign="top" >
+<div id="hm_t_5856" class="advert"></div>
+</td><td  valign="top">
+<div id="vgad336x280" class="advert">
+
+
+
+
+
+
+
+
+
+<!-- 广告位：336x280 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "369316";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+
+
+
+
+  
+</div>
+</td></tr></table>
+
+<div id="approved" class="approved" ></div>
+
+<div class="approved" >
+<div class="linkblock">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+     document.write('<a style="display:none!important" id="tanx-a-mm_10455490_523526_13500542"></a>');
+     tanx_s = document.createElement("script");
+     tanx_s.type = "text/javascript";
+     tanx_s.charset = "gbk";
+     tanx_s.id = "tanx-s-mm_10455490_523526_13500542";
+     tanx_s.async = true;
+     tanx_s.src = "http://p.tanx.com/ex?i=mm_10455490_523526_13500542";
+     tanx_h = document.getElementsByTagName("head")[0];
+     if(tanx_h)tanx_h.insertBefore(tanx_s,tanx_h.firstChild);
+</script>
+<!-- 广告位：300x250 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "372172";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+  
+</div>
+</div>
+
+<p>
+<br><br>
+
+<div id="reply" style="display:none">
+<input type="hidden" id="replySubject" name="replySubject"  value="Proxy模式与Decorator模式的区别"/>  
+</div>
+
+
+<div id="isNewMessage" style="display:none"></div>
+
+<script>
+$LAB
+.script("/common/js/prototype.js").wait()
+.script("/forum/js/messageList.js").wait()
+.wait(function(){
+	//below need prototype.js
+	 var sId = "";
+	 
+	    sId = '1296033888003';
+	 
+	 viewcount('26673', sId);
+	 //stickyList();
+	 
+	 if (isDisplayNeedLoad('approved')){
+	    approveList();
+	 }else{ 	 
+	   Event.observe(window, 'scroll', function() {
+			setTimeout(function(){
+			 if (isDisplayNeedLoad('approved')){	
+						    approveList();
+	         }			
+			},1500);
+	   });
+	 }
+
+	 //checkmessage from messageNotfier.jsp
+	 var messageChkURL = "/forum/checknewmessage.shtml";
+	 new Ajax.Updater('isNewMessage', messageChkURL, { method: 'get', evalScripts: true});
+	
+});      
+</script>
+
+
+<!-- share baidu -->
+<script type="text/javascript" id="bdshare_js" data="type=tools" ></script>
+        <script type="text/javascript" id="bdshell_js"></script>
+        <script type="text/javascript">document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + new Date().getHours();</script>
+        
+
+
+
+
+
+
+
+
+<table width="971" border="0" cellspacing="0" cellpadding="0" height="1" bgcolor="#ddd"  align="center">
+              <tr>
+                <td></td>
+              </tr>
+</table>
+<table align='center' border="0" cellpadding="0" cellspacing="2" width="971" >
+<tr><td><p align="center">
+  <table  border="0" align="center" cellpadding="0" cellspacing="1">
+  <tr>
+    <td>
+    <table align='center'>
+      <tr><td align="center">
+       
+       <table><tr>
+        <td>
+        <a href="/mobile/" >移动版</a>
+        </td>
+        <td>
+        <a href="http://www.jdon.com/aboutsite.htm" >关于本站</a>
+        </td>
+        <td><a href="javascript:void(0)" onClick="loadWLJSWithP('/help.jsp',helpW)">使用帮助</a>
+       <script language="javascript">
+        var helpW = function(url){         
+           var helpW = new Window({className: "mac_os_x", width:550, height:400, title: "  注意  "});
+           helpW.setURL(url);
+           helpW.showCenter();          
+        }
+        
+        </script>
+        </td>              
+        <td>
+        <a href="javascript:void(0)" onClick="loadWLJSWithP('/forum/feed/feedback.jsp',helpW)">联系管理员 </a> 
+        </td>
+          <td>
+        探索 分享 交流 解惑 授道 
+         </td>
+         </tr></table>                  
+        </td> </tr>      
+      <tr> <td align="center"  >
+		<span class='small2'>OpenSource  <a href="http://www.jdon.com/jdonframework/jivejdon3/index.html" target="_blank"><strong>JIVEJDON</strong> </a> Powered
+		by <a href="http://www.jdon.com/jdonframework/" target="_blank"><b>JdonFramework</b></a>  Code &copy; 2002-15 <a href="http://www.jdon.com/" target="_blank"><b>jdon.com</b></a></span>
+		</td>  </tr>
+    </table>
+    
+    </td>
+  </tr>
+</table>
+
+</td></tr></table>
+
+<script type="text/javascript">/*120*270，创建于2012-3-23*/ var cpro_id = 'u818950';</script><script src="http://cpro.baidu.com/cpro/ui/f.js" type="text/javascript"></script>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7e3d5668768124ec82f8795927ee448e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+<a href="/common/503warn.jsp" rel="nofollow"><font color="#FFFFFF">anti spam </font></a>
+
+
+
+</body>
+</html>
+ 
+
+
+   
+ 
+
+  

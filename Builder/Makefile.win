@@ -1,0 +1,42 @@
+# Project: Builder
+# Makefile created by Dev-C++ 4.9.9.2
+
+CPP  = g++.exe
+CC   = gcc.exe
+WINDRES = windres.exe
+RES  = 
+OBJ  = main.o Component.o ConcreteComponent.o BuildCar.o Director.o $(RES)
+LINKOBJ  = main.o Component.o ConcreteComponent.o BuildCar.o Director.o $(RES)
+LIBS =  -L"C:/Dev-Cpp/lib"  
+INCS =  -I"C:/Dev-Cpp/include" 
+CXXINCS =  -I"C:/Dev-Cpp/lib/gcc/mingw32/3.4.2/include"  -I"C:/Dev-Cpp/include/c++/3.4.2/backward"  -I"C:/Dev-Cpp/include/c++/3.4.2/mingw32"  -I"C:/Dev-Cpp/include/c++/3.4.2"  -I"C:/Dev-Cpp/include" 
+BIN  = Builder.exe
+CXXFLAGS = $(CXXINCS)  
+CFLAGS = $(INCS)  
+RM = rm -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before Builder.exe all-after
+
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o "Builder.exe" $(LIBS)
+
+main.o: main.cpp
+	$(CPP) -c main.cpp -o main.o $(CXXFLAGS)
+
+Component.o: Component.cpp
+	$(CPP) -c Component.cpp -o Component.o $(CXXFLAGS)
+
+ConcreteComponent.o: ConcreteComponent.cpp
+	$(CPP) -c ConcreteComponent.cpp -o ConcreteComponent.o $(CXXFLAGS)
+
+BuildCar.o: BuildCar.cpp
+	$(CPP) -c BuildCar.cpp -o BuildCar.o $(CXXFLAGS)
+
+Director.o: Director.cpp
+	$(CPP) -c Director.cpp -o Director.o $(CXXFLAGS)

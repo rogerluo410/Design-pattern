@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>设计模式：Command模式 - superbeck的专栏 - 博客频道 - CSDN.NET</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="Commad模式是一种对象行为模式，它可以对发送者(sender)和接收者(receiver)完全解耦(decoupling)。（发送者 是请求操作的对象，接收者 是接收请求并执行某操作的对象。有了 解耦，发送者对接收者的接口一无所知。）简单说明&#160;简单来看，在对象A调用了对象B的一个方法，这样对象A就可以看做一个发送者，对象B就是" />
+<script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+<link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/default/css/style.css?v=1.1" />
+<link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/superbeck/rss/list" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+</head>
+<body>
+<script src="http://csdnimg.cn/pubnav/js/pub_topnav_2011.js"type="text/javascript"></script>
+
+<div id="container">
+<div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h1><a href="http://blog.csdn.net/superbeck">superbeck的专栏</a></h1>
+            <h2>以小事始，方知大事之成败</h2>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg"></div>
+    <div class="navigator">
+        <ul>
+            <li id="btnContents"><a href="http://blog.csdn.net/superbeck?viewmode=contents"><span><img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+            <li id="btnView"><a href="http://blog.csdn.net/superbeck?viewmode=list"><span><img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+            <li id="btnRss"><a href="http://blog.csdn.net/superbeck/rss/list"><span><img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>
+</ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "superbeck";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/superbeck";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";
+</script>
+
+<div id="body">
+<div id="main">
+<div class="main">
+<div class="notice"> 
+
+<a href="https://code.csdn.net/blog/12" target="_blank">
+<font color=red>公告：博客新增直接引用代码功能</font></a>
+
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://www.csdn.net/article/2013-07-24/2816320" target="_blank"><font color=blue>专访谭海燕：移动互联网开发的那些事
+</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/9495139
+"target="_blank">
+<font color=red>CSDN博客频道自定义域名、标签搜索功能上线啦！
+
+
+ </font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/adali/article/details/9813651"target="_blank">
+<font color=blue>独一无二的职位：开源社区经理 
+ </font></a>
+
+
+
+
+</div>
+<div id="article_details" class="details">
+    <div class="article_title">
+    <span class="ico ico_type_Original"></span>
+    <h3>
+        <span class="link_title"><a href="/superbeck/article/details/5566817">
+        设计模式：Command模式
+        </a></span>
+    </h3>
+</div>
+
+        
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="/superbeck/article/category/207307">java</a> 
+            <a href="/superbeck/article/category/490099">设计/UML/MDA</a> 
+        </span>
+    <span class="link_postdate">2010-05-07 14:07</span>
+    <span class="link_view" title="阅读次数">169人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments">评论</a>(0)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:collectArticle('设计模式：Command模式','5566817');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report"  onclick="javascript:report(5566817,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href='http://blog.csdn.net/tag/details.html?tag=command' target=_blank>command</a><a href='http://blog.csdn.net/tag/details.html?tag=%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f' target=_blank>设计模式</a><a href='http://blog.csdn.net/tag/details.html?tag=decoupling' target=_blank>decoupling</a><a href='http://blog.csdn.net/tag/details.html?tag=%e6%8b%9b%e8%81%98' target=_blank>招聘</a><a href='http://blog.csdn.net/tag/details.html?tag=%e6%96%87%e6%9c%ac%e7%bc%96%e8%be%91' target=_blank>文本编辑</a><a href='http://blog.csdn.net/tag/details.html?tag=callback' target=_blank>callback</a></div>
+
+
+    
+<div id="article_content" class="article_content">
+<p><span style="font-size: small;"><span id="ArticleContent1_ArticleContent1_lblContent">Commad模式是一种对象行为模式，
+它可以对发送者(sender)和接收者(receiver)完全解耦(decoupling)。（&quot;发送者&quot; 是请求操作的对象，&quot;接收者&quot; 
+是接收请求并执行某操作的对象。有了 &quot;解耦&quot;，发送者对接收者的接口一无所知。）</span>
+
+</span>
+
+</p>
+<p><span style="font-size: medium;"><strong>简单说明</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">简单来看，在对象A调用了对象B的一个方法，这样对象A就可以看做一个发送者，对象B就是一个接收者，在这种情况下，对象A必须知道对象B相应的方法名。如果在这里使用Command模式的话，就相当于在对象A和对象B之间加了一个中间层，由中间层来完成这一次的调用，在这种情况下，对象A并不需要知道对象B的方法。</span>
+
+</p>
+<p><span style="font-size: small;">Encapsulate a request as an object , thereby letting you parameterize 
+clients with different requests, queue or log requests, and support 
+undoable operations.</span>
+
+</p>
+<p><span style="font-size: medium;"><strong>示例</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">Command模式的核心思想就是把一个请求包装为一个对象，由这个对象完成本次请求的调用。一个请求队列，或者说一个操作的do和undo都是可以很好应用Command模式的例子。</span>
+
+</p>
+<p><span style="font-size: small;">比如说，我们的操作系统里面设置了一些自启动的程序。也就是说，在系统启动的时候会一一启动这些程序。而这些程序的启动方法可能是不一样的，并且自启动程序的个数也是不定的。那么我们就可以把这些自启动程序的启动请求包装为Command对象，操作系统只需要知道这些Command对象就行了，而不需要知道那些自启动程序的详细信息。</span>
+
+</p>
+<p><span style="font-size: small;">又比如说，某老板谈妥了一笔生意。这个时候，他需要他的秘书准备合同，财务准备资金，人事招聘相关人才。假设我们有三个渠道分别对应了这三种操作，老板只要对这三个渠道下达执行命令即可，而不需要分别告诉他的秘书要准备合同，让财务准备资金，还得通知人事进行人才招聘。在这里，这三个渠道就是三个包装好的Command对象。</span>
+
+</p>
+<p><span style="font-size: small;">也许你觉得在上面这个需求里面，包装三个渠道是完全没有必要的，直接调用不就好了吗？确实是这样，假如每笔生意都是这样的操作流程的话。假如现在这个老板谈妥了另外一笔生意，而这笔生意呢，只需要准备合同和资金，并不需要招聘人才，因为现有人才是足够的。在这样的情况下，Command模式还是非常适用的，老板只要对秘书和财务的渠道下达执行命令就可以了。</span>
+
+</p>
+<p><span style="font-size: small;">再比如说，最常见的do/undo操作。假如我们要实现一个文本编辑器，并且要提供限定次数内的undo功能，此时Command模式可能算是一个再好不过的解决方案了。只要我们把用户每次的操作都包装为Command对象，并且总是保留最后的那一部分Command。那么当用户需要undo功能的时候，我们只需要从最后开始提取每一个Command对象，并且执行相应的undo方法就能实现了。</span>
+
+</p>
+<p><strong><span style="font-size: medium;">设计图</span>
+
+</strong>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><strong><span style="font-size: small;">图一</span>
+
+</strong>
+
+<br />
+
+<span style="font-size: small;"><img src="http://hi.csdn.net/attachment/201005/8/390690_127329451975gz.png" alt="Command Design Pattern" width="810" height="642" />
+
+</span>
+
+</p>
+<p><span style="font-size: small;">图一中这种设计，可能算是一种比较简单的Command模式了吧。Command只有一个execute()方法，而Invoker也只持有一个Command对象，也就是说，只能执行一种操作。</span>
+
+</p>
+<p><strong><span style="font-size: small;">图二</span>
+
+</strong>
+
+<br />
+
+<span style="font-size: small;"><img src="http://hi.csdn.net/attachment/201005/8/390690_1273296431lKBJ.png" alt="Command Design Pattern" width="906" height="573" />
+
+</span>
+
+</p>
+<p><span style="font-size: small;">图二的设计糅合了一些功能。在这里，我们的Command对象不但有execute()方法，而且有undo()方法，这样就可以完成undo操作了。而且，Command的子类呢，既有接收某个Receiver对象的子类类型，也有接收一组Command对象的子类类型。这个时候的Invoker也已经有了执行一组Command对象的能力，也有undo一组Command的能力了。</span>
+
+<br />
+<br />
+
+<span style="font-size: small;">图一和图二中，已经用颜色进行了区分。绿色的Command和Invoker是Command模式的核心，而黄色的Receiver对象暂时只是ConcreateCommand1包装的接受者（当然其他的Command子类的对象也可以使用），并不是必须存在的。</span>
+
+<br />
+<br />
+
+<span style="font-size: small;">图中的依赖关系和关联关系并不是一定存在的。因为现在有类似于Spring这种IoC容器的存在，我们基本上可以实现两者之间的完全解耦。当然，对于Interface的依赖和关联可能还是存在的。</span>
+
+<br />
+<br />
+
+<span style="font-size: small;">图中的代码只是示例代码，为了方便理解而已。</span>
+
+</p>
+<p><span style="font-size: medium;"><strong>优点</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">★. 实现了命令的发送者和接收者之间的解耦<br />
+
+★. 很容易构造一个命令队列，也可以构建组合命令<br />
+
+★. 记录相关的命令日志<br />
+
+★. 增加命令的状态，实现命令的撤销和重做<br />
+
+★. 允许接受请求的一方决定是否可做<br />
+
+★. 新的命令轻而易举可以加入其中</span>
+
+</p>
+<p><span style="font-size: medium;"><strong>缺点</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">☆. 可能会有过多的具体命令类存在</span>
+
+</p>
+<p><span style="font-size: medium;"><strong>适用</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">★. 抽象出待执行的动作以参数化某对象。你可用过程语言中的回调（callback）函数表达这种参数化机制。所谓回调函数是指函数先在某处注册，而它将在稍后某个需要的时候被调用。Command模式是回调机制的一个面向对象的替代品。在不同的时刻指定、排列和执行请求。一个Command对象可以有一个与初始请求无关的生存期。如果一个请求的接收者可用一种与地址空间无关的方式表达，那么就可将负责该请求的命令对象传送给另一个不同的进程
+并在那儿实现该请求。</span>
+
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size: small;">★. 支持取消操作。Command的Execute操作可在实施操作前将状态存储起来，在取消操作时这个状态用来消除该操作的影响。Command接口必须添加一个UnExecute操作，该操作取消上一次Execute调用的效果。执行的命令被存储在一个历史列表中。可通过向后和向前遍历这一列表并分别调用UnExecute和Execute来实现重数不限的&ldquo;取消&rdquo;和&ldquo;重做&rdquo;。</span>
+
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size: small;">★. 支持修改日志，这样当系统崩溃时，这些修改可以被重做一遍。在Command接口中添加装载操作和存储操作，可以用来保持变动的一个一致的修改日志。从崩溃中恢复的过程包括从磁盘中重新读入记录下来的命令并用Execute操作重新执行它们。</span>
+
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size: small;">★. 用构建在原语操作上的高层操作构造一个系统。这样一种结构在支持事务(transaction)的信息系统中很常见。一个事务封装了对数据的一组变动。Command模式提供了对事务进行建模的方法。Command有一个公共的接口，使得你可以用同一种方式调用所有的事务。同时使用该模式也易于添加新事务以扩展系统。 </span></p>
+<p><span style="font-size: medium;"><strong>参考资料</strong>
+
+</span>
+
+</p>
+<hr />
+<p>&nbsp;</p>
+<p><span style="font-size: small;">1. http://blog.csdn.net/chenshu181/archive/2005/06/03/387298.aspx</span>
+
+<br />
+
+<span style="font-size: small;">2. http://scanfprintf123.javaeye.com/blog/523253</span>
+
+<br />
+
+<span style="font-size: small;">3. http://dev.csdn.net/article/78143.shtm</span>
+
+<br />
+
+<span style="font-size: small;">4. http://www.javaeye.com/topic/206937</span>
+
+<br />
+
+<span style="font-size: small;">5. http://www.examda.com/ncre2/JAVA/bianc/20091022/085201677.html</span>
+
+<br />
+
+<span style="font-size: small;">6. http://www.javaeye.com/topic/416114</span>
+
+<br />
+
+<span style="font-size: small;">7. http://www.cnblogs.com/xiaoqin/archive/2007/08/06/844884.html</span>
+
+<br />
+
+<span style="font-size: small;">&nbsp; 对比</span>
+<br />
+
+<span style="font-size: small;">1. http://www.java2000.net/todoshow.jsp?id=111340</span>
+
+<br />
+
+<span style="font-size: small;">2. http://topic.csdn.net/u/20090108/15/234a458d-7944-4431-8b2e-d62b9e6f0915.html</span>
+
+</p>
+</div>
+
+<div class="share_buttons" id="sharePanel"></div>
+<!--192.168.100.34-->
+<div class="article_next_prev">
+    <li class="prev_article"><span>上一篇：</span><a href="/superbeck/article/details/5417620">Java 中 Vector、ArrayList、List 使用深入剖析</a></li>
+    <li class="next_article"><span>下一篇：</span><a href="/superbeck/article/details/5648131">建立自己的版本控制服务器----SVN(subversion)的初级使用</a></li>
+</div>
+
+
+    
+</div>
+<div id="ad_cen">
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "117306";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+<script type="text/javascript">
+    //new Ad(4, 'ad_cen');
+</script>
+<div id="comment_title" class="panel_head">查看评论<a name="comments"></a></div>
+<div id="comment_list"></div>
+<div id="comment_bar"></div>
+<div id="comment_form"></div>
+<div class="announce">* 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+<script type="text/javascript">
+    var fileName = '5566817';
+    var commentscount = 0;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+<div id="ad_bot"></div>
+<script type="text/javascript">
+    new Ad(5, 'ad_bot');
+</script>
+<div id="report_dialog"></div>
+
+<div id="d-top" style="display:none;">
+<a id="d-top-a" href="#" title="回到顶部">
+<img src="http://static.blog.csdn.net/images/top.png" alt="TOP" /></a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var d_top=$('#d-top');
+        document.onscroll=function(){
+            var scrTop=(document.body.scrollTop||document.documentElement.scrollTop);
+            if(scrTop>500){
+                d_top.show();
+            }else{
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function(){
+            scrollTo(0,0);
+            this.blur();
+            return false;
+        });
+    });
+</script>
+
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="side">
+<div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/superbeck" target="_blank">
+    <img src="http://avatar.csdn.net/5/C/A/1_superbeck.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/superbeck" class="user_name" target="_blank">superbeck</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+<a href="javascript:void(0);" class="letter" onclick="loginto(1)" title="[发私信]"></a>
+</div>
+<div id="blog_medal">
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>93926次</span></li>
+    <li>积分：<span>1765分</span></li>
+    <li>排名：<span>第5120名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>72篇</span></li>
+    <li>转载：<span>20篇</span></li>
+    <li>译文：<span>1篇</span></li>
+    <li>评论：<span>45条</span></li>
+</ul>
+</ul>
+</div>
+
+<div class="panel">
+<ul class="panel_body" style="padding:0;">
+<script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script> 
+<script type="text/javascript"> 
+BAIDU_CLB_preloadSlots("724643","117306"); 
+</script>
+<script type="text/javascript">BAIDU_CLB_fillSlot("724643");</script> 
+</ul>
+</div>
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="submit" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/551445">Database</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/494146">eclipse</a><span>(7)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/207307">java</a><span>(27)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/417007">Life</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/487521">notes开发</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/590316">python</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/744229">ubuntu/linux</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/708356">Velocity</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/547684">Web开发</a><span>(22)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/412477">开发工具相关</a><span>(28)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/451648">开发杂想</a><span>(13)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/490099">设计/UML/MDA</a><span>(13)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/473096">软件工程</a><span>(6)</span>
+</li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/superbeck/article/month/2011/04">2011年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2011/02">2011年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/11">2010年11月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/10">2010年10月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/09">2010年09月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/07">2010年07月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/06">2010年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/05">2010年05月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/03">2010年03月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/02">2010年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/01">2010年01月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/11">2009年11月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/10">2009年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/09">2009年09月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/08">2009年08月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/07">2009年07月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/06">2009年06月</a><span>(9)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/05">2009年05月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/03">2009年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/02">2009年02月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/01">2009年01月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/12">2008年12月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/11">2008年11月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/10">2008年10月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/09">2008年09月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/08">2008年08月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/06">2008年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/11">2006年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/10">2006年10月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/05">2006年05月</a><span>(1)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head"><span>阅读排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/superbeck/article/details/5721382" title="eclipse上的几个Velocity插件">eclipse上的几个Velocity插件</a><span>(7394)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4359870" title="Ant:给Ant脚本传递参数的最佳实践">Ant:给Ant脚本传递参数的最佳实践</a><span>(4790)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4446177" title="设计模式：简单工厂、工厂方法、抽象工厂之小结与区别">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a><span>(3877)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4799407" title="基于java的程序OutOfMemory问题的解决及Xms/Xmx/Xss的解释和应用">基于java的程序OutOfMemory问题的解决及Xms/Xmx/Xss的解释和应用</a><span>(3805)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3983671" title="程序员兼职创收的新方法 - 依托平台开发应用">程序员兼职创收的新方法 - 依托平台开发应用</a><span>(3587)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4532818" title="python学习——初次接触(python,wxpython,Boa,py2exe)">python学习——初次接触(python,wxpython,Boa,py2exe)</a><span>(3483)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3226709" title="一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识">一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识</a><span>(3171)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5325991" title="设计模式：Visitor模式">设计模式：Visitor模式</a><span>(2511)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247145" title="使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法">使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法</a><span>(2254)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247066" title="如何用Java实现MySQL数据库的备份和恢复">如何用Java实现MySQL数据库的备份和恢复</a><span>(2124)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/superbeck/article/details/4323861" title="StarUML: 插件加载失败的解决方法">StarUML: 插件加载失败的解决方法</a><span>(11)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4213095" title="使用jstl1.1，注意与1.0的区别">使用jstl1.1，注意与1.0的区别</a><span>(5)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4446177" title="设计模式：简单工厂、工厂方法、抽象工厂之小结与区别">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a><span>(5)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247925" title="displaytag的properties文件的汉化-displaytag_zh_CN.properties">displaytag的properties文件的汉化-displaytag_zh_CN.properties</a><span>(3)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3226709" title="一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识">一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5325991" title="设计模式：Visitor模式">设计模式：Visitor模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5721382" title="eclipse上的几个Velocity插件">eclipse上的几个Velocity插件</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247145" title="使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法">使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5969884" title="设计模式：Bridge模式">设计模式：Bridge模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/2575212" title="浏览器的刷新和确定按钮的功能">浏览器的刷新和确定按钮的功能</a><span>(2)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+    <a href="/superbeck/article/details/4323861#comments">StarUML: 插件加载失败的解决方法</a>
+    <p style="margin:0px;"><a href="/zhanshanyou" class="user_name">zhanshanyou</a>:
+解决问题的好文章，多谢！
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5325991#comments">设计模式：Visitor模式</a>
+    <p style="margin:0px;"><a href="/qyongkang" class="user_name">qyongkang</a>:
+写的好，终于看懂了
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4247925#comments">displaytag的properties文件的汉化-displaytag_zh_CN.properties</a>
+    <p style="margin:0px;"><a href="/seeyou339621438" class="user_name">seeyou339621438</a>:
+嗯，我也是看了你的文章才解决了问题！非常感谢。
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5325991#comments">设计模式：Visitor模式</a>
+    <p style="margin:0px;"><a href="/sheismylife" class="user_name">sheismylife</a>:
+写的挺好。我已经快忘记Visitor了，看了你的UML图马上想起来了。
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5721382#comments">eclipse上的几个Velocity插件</a>
+    <p style="margin:0px;"><a href="/Wuaner" class="user_name">Wuaner</a>:
+你说的 g &amp; s 上的 Veloeclipse，是完全一样的，没有任何区别，只是作者闲的没事同时上...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4213095#comments">使用jstl1.1，注意与1.0的区别</a>
+    <p style="margin:0px;"><a href="/usx09325_" class="user_name">usx09325_</a>:
+顶顶
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4446177#comments">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a>
+    <p style="margin:0px;"><a href="/lxxxxl" class="user_name">lxxxxl</a>:
+“简单工厂 ： 用来生产同一等级结构中的任意产品。（对于增加新的产品，无能为力）”我认为简单工厂模式...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/1344230#comments">eclipse中安装插件的几种方法</a>
+    <p style="margin:0px;"><a href="/bingyingao" class="user_name">bingyingao</a>:
+mark一下
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4446177#comments">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a>
+    <p style="margin:0px;"><a href="/elance_123" class="user_name">elance_123</a>:
+文中提到的“产品类可以是多种形式，多层继承或者是单个类都是可以的”，是否可以解释一下“多层继承或者是...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4247066#comments">如何用Java实现MySQL数据库的备份和恢复</a>
+    <p style="margin:0px;"><a href="/mjm88132" class="user_name">mjm88132</a>:
+`111
+    </p>
+    </li>
+</ul>
+</div>
+<div id="custom_column_968473" class="panel">
+<ul class="panel_head"><span>useful link</span></ul>
+<ul class="panel_body">
+<ul><li><a href="www.download.com" target=_blank>免费软件(英文)</a></li><li><a href="www.open-open.com" target=_blank>开源大全</a></li><li><a href="www.sourceforge.net" target=_blank>source forge</a></li><li><a href="www.java2s.com" target=_blank>www.java2s.com</a></li><li><a href="http://www.w3schools.com/" target=_blank>http://www.w3schools.com/</a></li></ul>
+</ul>
+</div></div>
+<div class="clear"></div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js?v=1.1"></script>
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=129278"></script>
+
+<script type="text/javascript">
+document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date()/120000).toString(36) + '="></'+'script>');
+</script>
+
+<script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js?v=1"></script>
+
+
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+
+<script type="text/javascript" src="http://zz.csdn.net/js/count.js"></script>
+
+</div>
+</body>
+</html>

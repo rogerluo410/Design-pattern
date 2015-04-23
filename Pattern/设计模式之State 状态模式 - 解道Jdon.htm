@@ -1,0 +1,540 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- #BeginTemplate "/Templates/module.dwt" --><!-- DW6 -->
+<head>
+<!-- #BeginEditable "doctitle" --> 
+<title> 设计模式之State 状态模式  - 解道Jdon</title>
+<meta name="Description" content="State模式是将导致不同状态的不同行为事件分别进行封装，保证状态改变的一致性。"/>
+<meta name="Keywords" content=" State模式,状态模式,有态模式,数据库, state pattern" /> 
+
+<!-- #EndEditable --> 
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+<meta http-equiv="refresh" content="1800"/>
+<link href="../js/jdon.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/index.js"></script>
+</head>
+<body  bgcolor="#FFFFFF" >
+<input type="hidden" id="contextPath"  name="contextPath" value="" >
+<table width="971" border="0" cellpadding="0" cellspacing="2" align="center"  bgcolor="#FFFFFF"><tr><td></td></tr></table>
+
+<table width="971" border="0" align="center" cellpadding="0" cellspacing="0">
+          <tr> 
+            <td width="120" rowspan="2"   valign="middle"  > 
+            
+               <a href="http://www.jdon.com"><img src="../simgs/jdon.gif" width="120" height="60" border="0"></a> </td>
+            <td  align="right" >
+			<div class="userbox">
+    <form method="GET" action="http://www.jdon.com/account/protected/loginhome.jsp"  >
+    &nbsp;&nbsp;<a href="/threads" target="_blank">主题</a>
+  &nbsp;&nbsp;<a href="/messages" target="_blank">评论</a>
+  &nbsp;&nbsp;<a href="/approval" target="_blank">推荐</a>
+  &nbsp;&nbsp;<a href="/tags" target="_blank">标签</a>
+  &nbsp;&nbsp;<a href="/authors" target="_blank">用户</a>
+  &nbsp;&nbsp;<a href="/query/threadViewQuery.shtml"  target="_blank">查搜</a> &nbsp;&nbsp;
+               <span id="loggedInfo">
+    用户<input type="text" name="j_username" size="9" tabindex="1">
+    密码<input type="password" name="j_password" size="9" tabindex="2" >
+    自动
+    <input type="checkbox" name="rememberMe"  checked="checked" ><input type="submit" value=" 登陆 " tabindex="3" class="logini" >
+    <a href="/account/newAccountForm.shtml">注册</a>   </span>	      
+     &nbsp;&nbsp;
+    </form>
+</div>
+
+		</td>
+          </tr>
+        <tr><td >
+            
+			 <table cellpadding="0" cellspacing="1" bgcolor="#ffffff" width="100%">
+        <tr >
+          <td height="26" bgcolor="#6e155f">&nbsp;</td>
+          <td height="26" align="center" bgcolor="#E671B8"  width="100" ><a href="http://www.jdon.com/designpatterns/" target="_blank" class="a03">设计模式</a></td>
+          <td height="26" align="center" bgcolor="#996600"  width="100" ><a href="http://www.jdon.com/ddd.html" target="_blank" class="a03">领域驱动设计</a></td>
+          <td height="26" align="center" bgcolor="#8CBF26"  width="100" ><a href="http://www.jdon.com/design.htm" target="_blank" class="a03">云架构</a></td>                             
+          <td height="26" align="center" bgcolor="#00ABA9"  width="100" ><a href="http://www.jdon.com/jdonframework/" target="_blank" class="a03">开源框架</a></td>
+          <td height="26" align="center" bgcolor="#339933"  width="100" ><a href="http://www.jdon.com/consultant.html" target="_blank" class="a03">培训咨询</a></td>
+          <td height="26" align="center" bgcolor="#3e6d8e"  width="100" ><a href="http://www.jdon.com/threads" target="_blank"  class="a03">社区主题</a></td>
+          
+        </tr>
+      </table>
+            </td></tr>
+</table>
+
+ 
+<table width="971" border="0" cellspacing="0" cellpadding="0"  align="center" height="2" bgcolor="#F97D0D" >
+  <tr>
+    <td ></td>
+  </tr>
+</table>
+  
+<div class="post_warp">
+   <div class="post_sidebar">
+           <div class="article">				
+				<!-- #BeginEditable "main" --> 
+      <a href="index.htm">设计模式目录</a> &gt;&gt; 当前页								
+                  <h1 class="bige20" align="center">设计模式之State</h1>
+                  <p align="center"><a href="http://www.jdon.com/aboutme.htm">板桥里人</a> http://www.jdon.com 2002/4/6/</p>
+				  <div class="adsensf" id="vgad336x280">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 300x250 -->
+<ins class="adsbygoogle"
+     style="display:inline-block;width:300px;height:250px"
+     data-ad-client="ca-pub-7573657117119544"
+     data-ad-slot="5733973703"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+</div>
+                  <p><i><b>State模式的定义</b></i>: 不同的状态,不同的行为;或者说,每个状态有着相应的行为.</p>
+                  <p><i><b>何时使用</b></i>?<br />
+                    State模式在实际使用中比较多,适合&quot;状态的切换&quot;.因为我们经常会使用If elseif else 
+                  进行状态切换, 如果针对状态的这样判断切换反复出现,我们就要联想到是否可以采取State模式了.</p>
+                  <p>不只是根据状态,也有根据属性.如果某个对象的属性不同,对象的行为就不一样,这点在数据库系统中出现频率比较高,我们经常会在一个数据表的尾部,加上property属性含义的字段,用以标识记录中一些特殊性质的记录,这种属性的改变(切换)又是随时可能发生的,就有可能要使用State.<br />
+                  </p>
+                  <p><i><b>是否使用?</b></i><br />
+                  在实际使用,类似开关一样的状态切换是很多的,但有时并不是那么明显,取决于你的经验和对系统的理解深度.</p>
+                  <p>这里要阐述的是&quot;开关切换状态&quot; 和&quot; 一般的状态判断&quot;是有一些区别的, &quot; 
+                    一般的状态判断&quot;也是有 if..elseif结构,例如:</p>
+                  <p>　　　　if (which==1) state=&quot;hello&quot;;<br />
+                    　　　　else if (which==2) state=&quot;hi&quot;;<br />
+                    　　　　else if (which==3) state=&quot;bye&quot;;<br />
+                  </p>
+                  <p>这是一个 &quot; 一般的状态判断&quot;,state值的不同是根据which变量来决定的,which和state没有关系.如果改成:</p>
+                  <p>　　　　if (state.euqals(&quot;bye&quot;)) state=&quot;hello&quot;;<br />
+                    　　　　else if (state.euqals(&quot;hello&quot;)) state=&quot;hi&quot;;<br />
+                    　　　　else if (state.euqals(&quot;hi&quot;)) state=&quot;bye&quot;;<br />
+                  </p>
+                  <p>这就是 &quot;开关切换状态&quot;,是将state的状态从&quot;hello&quot;切换到&quot;hi&quot;,再切换到&quot;&quot;bye&quot;;在切换到&quot;hello&quot;,好象一个旋转开关,这种状态改变就可以使用State模式了.</p>
+                  <p>如果单纯有上面一种将&quot;hello&quot;--&gt;&quot;hi&quot;--&gt;&quot;bye&quot;--&gt;&quot;hello&quot;这一个方向切换,也不一定需要使用State模式,因为State模式会建立很多子类,复杂化,但是如果又发生另外一个行为:将上面的切换方向反过来切换,或者需要任意切换,就需要State了.</p>
+                  <p>请看下例:</p>
+                  <table width="80%" border="0" cellspacing="3" cellpadding="3">
+                    <tr> 
+                      <td bgcolor="#CCCCCC"> <p>public class Context{</p>
+                        <p>　　private Color state=null;</p>
+                        <p>　　public void push(){</p>
+                        <p>　　　　//如果当前red状态 就切换到blue<br />
+                          　　　　if (state==Color.red) state=Color.blue;<br />
+                          <br />
+                          　　　　//如果当前blue状态 就切换到green<br />
+                          　　　　else if (state==Color.blue) state=Color.green;<br />
+                          <br />
+                          　　　　//如果当前black状态 就切换到red<br />
+                          　　　　else if (state==Color.black) state=Color.red;<br />
+                          <br />
+                          　　　　//如果当前green状态 就切换到black<br />
+                          　　　　else if (state==Color.green) state=Color.black;<br />
+                          　　　　<br />
+                          　　　　Sample sample=new Sample(state);<br />
+                          　　　　sample.operate();<br />
+                        　　}</p>
+                        <p>　　public void pull(){<br />
+                          <br />
+                        　　　　//与push状态切换正好相反</p>
+                        <p>　　　　if (state==Color.green) state=Color.blue;<br />
+                          　　　　else if (state==Color.black) state=Color.green;<br />
+                          　　　　else if (state==Color.blue) state=Color.red;<br />
+                          　　　　else if (state==Color.red) state=Color.black;<br />
+                          <br />
+                          　　　　Sample2 sample2=new Sample2(state);<br />
+                          　　　　sample2.operate(); <br />
+                        　　}</p>
+                        <p>}</p></td>
+                    </tr>
+                  </table>
+                  <p>在上例中,我们有两个动作push推和pull拉,这两个开关动作,改变了Context颜色,至此,我们就需要使用State模式优化它.</p>
+                  <p>另外注意:但就上例,state的变化,只是简单的颜色赋值,这个具体行为是很简单的,State适合巨大的具体行为,因此在,就本例,实际使用中也不一定非要使用State模式,这会增加子类的数目,简单的变复杂.</p>
+                  <p>例如: 银行帐户, 经常会在Open 状态和Close状态间转换.</p>
+                  <p>例如: 经典的TcpConnection, Tcp的状态有创建 侦听 关闭三个,并且反复转换,其创建 侦听 关闭的具体行为不是简单一两句就能完成的,适合使用State</p>
+                  <p>例如:信箱POP帐号, 会有四种状态, start HaveUsername Authorized quit,每个状态对应的行为应该是比较大的.适合使用State</p>
+                  <p>例如:在工具箱挑选不同工具,可以看成在不同工具中切换,适合使用State.如 具体绘图程序,用户可以选择不同工具绘制方框 
+                    直线 曲线,这种状态切换可以使用State.</p>
+                  <p><i><b>如何使用</b></i><br />
+                  State需要两种类型实体参与:</p>
+                  <p>1.state manager 状态管理器 ,就是开关 ,如上面例子的Context实际就是一个state manager, 
+                    在state manager中有对状态的切换动作.<br />
+                  2.用抽象类或接口实现的父类,,不同状态就是继承这个父类的不同子类.</p>
+                <!-- 广告位：336x280 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "369316";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+  <p>以上面的Context为例.我们要修改它,建立两个类型的实体.<br />
+                  <b>第一步: 首先建立一个父类:</b></p>
+                  <table width="80%" border="0" cellspacing="3" cellpadding="3" bgcolor="#FFFFFF">
+                    <tr> 
+                      <td bgcolor="#CCCCCC"> <p>public abstract class State{</p>
+                        <p>　　public abstract void handlepush(Context c);<br />
+                          　　public abstract void handlepull(Context c);<br />
+                        　　public abstract void getcolor();</p>
+                        <p>}</p></td>
+                    </tr>
+                  </table>
+                  <p>父类中的方法要对应state manager中的开关行为,在state manager中 本例就是Context中,有两个开关动作push推和pull拉.那么在状态父类中就要有具体处理这两个动作:handlepush() 
+                    handlepull(); 同时还需要一个获取push或pull结果的方法getcolor()</p>
+                  <p>下面是具体子类的实现:</p>
+                  <table width="80%" border="0" cellspacing="3" cellpadding="3">
+                    <tr> 
+                      <td bgcolor="#CCCCCC"> <p>public class BlueState extends 
+                          State{</p>
+                        <p>　　public void handlepush(Context c){<br />
+                          　　　　 //根据push方法&quot;如果是blue状态的切换到green&quot; ;<br />
+                        　　　　 c.setState(new GreenState());</p>
+                        <p>　　}<br />
+                        　　public void handlepull(Context c){</p>
+                        <p>　　　　 //根据pull方法&quot;如果是blue状态的切换到red&quot; ;<br />
+                        　　　　c.setState(new RedState());</p>
+                        <p>　　}</p>
+                        <p>　　public abstract void getcolor(){ return (Color.blue)}</p>
+                        <p>}</p>
+                        <p>&nbsp;</p></td>
+                    </tr>
+                  </table>
+                  <p>同样 其他状态的子类实现如blue一样.</p>
+                  <p> <b>第二步: 要重新改写State manager 也就是本例的Context:</b></p>
+                  <table width="97%" border="0" cellspacing="3" cellpadding="3">
+                    <tr> 
+                      <td bgcolor="#CCCCCC"> <p>public class Context{</p>
+                        <p>　　private Sate state=null; //我们将原来的 Color state 改成了新建的State 
+                          state;</p>
+                        <p>　　//setState是用来改变state的状态 使用setState实现状态的切换<br />
+                          　　pulic void setState(State state){<br />
+                          <br />
+                        　　　　this.state=state;</p>
+                        <p>　　}</p>
+                        <p>　　public void push(){</p>
+                        <p>　　　　//状态的切换的细节部分,在本例中是颜色的变化,已经封装在子类的handlepush中实现,这里无需关心<br />
+                          　　　　state.handlepush(this);<br />
+                          　　　　<br />
+                          　　　　//因为sample要使用state中的一个切换结果,使用getColor()<br />
+                          　　　　Sample sample=new Sample(state.getColor());<br />
+                        　　　　sample.operate(); </p>
+                        <p>　　}</p>
+                        <p>&nbsp;</p>
+                        <p>　　public void pull(){</p>
+                        <p>　　　　state.handlepull(this);<br />
+                          　　　　<br />
+                          　　　　Sample2 sample2=new Sample2(state.getColor());<br />
+                        　　　　sample2.operate(); </p>
+                        <p>　　}</p>
+                        <p>}</p>
+                        <p>&nbsp;</p></td>
+                    </tr>
+                  </table>
+                  <p>至此,我们也就实现了State的refactorying过程.</p>
+                  <p>以上只是相当简单的一个实例,在实际应用中,handlepush或handelpull的处理是复杂的.</p>
+                  <p>状态模式优点：<br />
+                    （1） 封装转换过程，也就是转换规则<br />
+                    （2） 枚举可能的状态，因此，需要事先确定状态种类。<br />
+                  </p>
+                  <p>状态模式可以允许客户端改变状态的转换行为，而状态机则是能够自动改变状态，状态机是一个比较独立的而且复杂的机制，具体可参考一个状态机开源项目：<a href="http://sourceforge.net/projects/smframework/" target="_blank">http://sourceforge.net/projects/smframework/</a></p>
+                  <p>状态模式在工作流或游戏等各种系统中有大量使用，甚至是这些系统的核心功能设计，例如政府OA中，一个批文的状态有多种：未办；正在办理；正在批示；正在审核；已经完成等各种状态，使用状态机可以封装这个状态的变化规则，从而达到扩充状态时，不必涉及到状态的使用者。</p>
+                  <p>在网络游戏中，一个游戏活动存在开始；开玩；正在玩；输赢等各种状态，使用状态模式就可以实现游戏状态的总控，而游戏状态决定了游戏的各个方面，使用状态模式可以对整个游戏架构功能实现起到决定的主导作用。</p>
+                  <p><strong>状态模式实质</strong>：<br />
+                  使用状态模式前，客户端外界需要介入改变状态，而状态改变的实现是琐碎或复杂的。</p>
+                  <p>使用状态模式后，客户端外界可以直接使用事件Event实现，根本不必关心该事件导致如何状态变化，这些是由状态机等内部实现。</p>
+                  <p>这是一种Event-condition-State，状态模式封装了condition-State部分。</p>
+                  <p>每个状态形成一个子类，每个状态只关心它的下一个可能状态，从而无形中形成了状态转换的规则。如果新的状态加入，只涉及它的前一个状态修改和定义。</p>
+                  <p>状态转换有几个方法实现：一个在每个状态实现next()，指定下一个状态；还有一种方法，设定一个StateOwner，在StateOwner设定stateEnter状态进入和stateExit状态退出行为。</p>
+                  <p>状态从一个方面说明了流程，流程是随时间而改变，状态是截取流程某个时间片。</p>
+                  <p><br />
+                  相关文章：</p>
+                  <p><a href="http://www.jdon.com/cqrs.html" target="_blank">CQRS架构</a></p>
+                <h3><a href="http://www.jdon.com/artichect/dbdead.htm" target="_blank"><strong>数据库已死</strong></a></h3>
+                  <h3><a  href="http://www.jdon.com/artichect/state.htm" target="_blank">状态对象:数据库的替代概念</a></h3>
+                  <p><a href="http://www.jdon.com/tags/21315" target="_blank">Jdon分析法</a></p>
+                  <p><a href="http://www.jdon.com/tags/17268">EventSourcing</a></p>
+                  <p><a href="http://www.jdon.com/tags/19815" target="_blank">EventStore</a></p>
+                  <p><a href="observer.htm" target="_blank">观察者模式</a></p>
+                  <p><a href="http://www.jdon.com/42961"><strong>不变性immutablity设计</strong></a></p>
+                <p><a href="http://www.jdon.com/10981" target="_blank">从工作流状态机实践中总结状态模式使用心得</a>                  </p>
+                  <p><a href="http://www.jdon.com/33178" target="_blank">状态模式和Hibernate</a><br />
+                  </p>
+                  <p>参考资源:<br />
+                    <a href="http://www.research.umbc.edu/%7Etarr/cs491/lectures/StateStrategy.pdf" target="_blank">the 
+                    State and Stategy</a><br />
+                    <a href="http://www.javaworld.com/javaworld/jw-08-1997/jw-08-stated.html" target="_blank">How 
+                    to implement state-dependent behavior</a> <br />
+                    <a href="http://www.patterndepot.com/put/8/state.pdf" target="_blank">The 
+                  state patterns</a></p>
+                  <p><a href="http://www.jdon.com/tags/598" target="_blank">更多工作流讨论</a></p>
+                  <p><a href="http://www.jdon.com/tags/1462" target="_blank">更多本模式专题..</a></p>
+                  <p><a href="http://www.jdon.com/key/state" target="_blank">更多相关话题state模式讨论</a></p>
+                  <h2><a href="http://www.jdon.com/key/%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F" target="_blank">更多相关话题状态模式讨论</a></h2>
+                <!-- #EndEditable -->	
+<div id="hm_t_5856"></div>                  
+<!-- Baidu Button BEGIN -->
+<div id="bdshare" class="bdshare_t bds_tools_32 get-codes-bdshare">
+<a class="bds_qzone"></a>
+<a class="bds_tsina"></a>
+<a class="bds_tqq"></a>
+<a class="bds_renren"></a>
+<a class="bds_t163"></a>
+<span class="bds_more"></span>
+<a class="shareCount"></a>
+</div>
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=6517526" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+<div class="gen-2"></div>			
+<br />
+<div class="approved" >
+<div class="linkblock">
+<script type="text/javascript"><!--
+google_ad_client = "ca-pub-7573657117119544";
+/* 300x250 */
+google_ad_slot = "5733973703";
+google_ad_width = 300;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+</div>
+<br />
+<div id="approved"  class="approved" ></div>				
+<div class="approved" >
+<div class="linkblock">
+<!-- 广告位：300x250 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "372172";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+</div>
+
+<div class="gen-2"></div>				 
+<br /><br /><br />
+
+</div>   
+
+<div class="gen-2"></div>
+</div>
+
+<div class="right_sider">
+	
+<form action="http://www.jdon.com/query/searchAction.shtml"  method="post" >
+<input type="text"  name="query"  size="23"  id="queryId" />
+<input type="image"  align="absmiddle" height="16" width="16" name="..." src="/simgs/search.gif" onclick="document.searchtForm.submit()"/>
+</form>			
+		
+<ul id="social-link" class="link">     
+ <li id="sina"></li>
+   <li id="rss">
+          <a href="http://www.jdon.com/followus.html#jdonrss">RSS订阅</a>
+</li>
+  <li id="o">
+<a href="../followus.html"> 微博关注</a></li>
+</ul>      
+   
+          <p></p>
+          
+<div class="frame-yy">          
+<script type="text/javascript"> 
+alimama_pid="mm_10455490_523526_11426136"; 
+alimama_width=250; 
+alimama_height=250; 
+</script> 
+<script src="http://a.alimama.cn/inf.js" type="text/javascript"> 
+</script>
+</div>                  
+<div><br /></div>
+<div class="gen-2"></div>				 
+
+          <p></p>
+<!-- #BeginEditable "Menu" --> <!-- #EndEditable -->
+                 
+<div class='tag-cloud'>
+    <li class="not-very-popular"><a href="soa.html" target="_blank">SOA</a> </li>
+    <li class="popular"> <a href="oo.html" target="_blank">面向对象</a></li>
+    <li class="not-very-popular"><a href="cloudcompute.html" target="_blank">云计算</a></li>
+    <li class="not-popular"> <a href="di.html" target="_blank">依赖注入</a></li>
+    <li class="not-very-popular"> <a href="aop.html" target="_blank">AOP</a></li>
+    <li class="somewhat-popular"><a href="cqrs.html" target="_blank">CQRS架构</a></li>
+    <li class="not-very-popular"><a href="DistributedSystems.html" target="_blank">分布式系统</a></li>
+    <li class="not-popular"><a href="cache.html" target="_blank">缓存</a></li>
+    <li class="not-popular"> <a href="rest.html" target="_blank">REST</a></li>
+    <li class="not-very-popular"><a href="colorUML.html" target="_blank">彩色UML</a></li> 	
+    <li class="somewhat-popular"><a href="eda.html" target="_blank">EDA</a></li>
+    <li class="not-popular"> <a href="dci.html" target="_blank">DCI架构</a></li>
+    <li class="not-very-popular"><a href="scalable.html" target="_blank">可扩展性</a></li>
+    <li class="popular"><a href="bigdata.html" target="_blank">大数据 </a></li>
+    <li class="not-very-popular"><a href="http://www.jdon.com/tags/10529" target="_blank">scala </a></li>
+	
+    <li class="not-very-popular">     <a href="http://www.jdon.com/tags/249" target="_blank">软件架构</a></li>
+    <li class="somewhat-popular"><a href="functional.html" target="_blank">FP函数编程</a></li>
+      <li class="somewhat-popular"><a href="http://www.jdon.com/nosql.html" target="_blank">NoSQL</a> </li>
+      
+ <li class="not-very-popular"><a href="http://www.jdon.com/tags/395" target="_blank">java学习 </a></li>      
+
+ <li class="not-popular"><a href="http://www.jdon.com/tags/297    " target="_blank">职业生涯 </a></li>      
+ 
+  <li class="not-very-popular"><a href="http://www.jdon.com/tags/619" target="_blank">软件观点 </a></li>      
+
+    <p></p>
+    </div>
+
+<div class="gen-2"></div>		
+ <p></p>
+<div class="frame-yy" >          
+ <script type="text/javascript"> 
+alimama_pid="mm_10455490_523526_11426110"; 
+alimama_width=250; 
+alimama_height=250; 
+</script> 
+<script src="http://a.alimama.cn/inf.js" type="text/javascript"> 
+</script>
+</div>
+<div class="gen-2"></div>		
+ <p> </p>
+
+<div class="frame-yy" >
+<IFRAME  MARGINHEIGHT=0 MARGINWIDTH=0 FRAMEBORDER=0 WIDTH="250" HEIGHT="400"  scrolling="no" 
+SRC="/query/stickyList.shtml?count=10&length=10&tablewidth=250"></iframe>    
+</div>
+      <div class="gen-2"></div>				 
+ <p> </p>
+ <div class="frame-yy" >  
+ <script type="text/javascript"><!--
+google_ad_client = "ca-pub-7573657117119544";
+/* 250窗口 */
+google_ad_slot = "7474909516";
+google_ad_width = 250;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div> 
+ <p> </p>
+<div class="gen-2"></div>	
+
+<div class="frame-yy" >          
+<IFRAME  MARGINHEIGHT=0 MARGINWIDTH=0 FRAMEBORDER=0 WIDTH="250" HEIGHT="500"  scrolling="no"   
+SRC="/query/hotlist.shtml?dateRange=180&tablewidth=250&length=15&count=15"></iframe>
+</div>
+<div class="gen-2"></div>				 
+ <p> </p>
+ <div class="frame-yy" >          
+<!-- 广告位：250x250 -->
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "372171";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+<div class="gen-2"></div>		
+ <p> </p>
+<div class="frame-yy" >          
+<!--cnzz tui-->
+<script  type="text/javascript" charset="utf-8"  src="http://tui.cnzz.net/cs.php?id=1000026258"></script>
+<!--cnzz tui-->
+</div>
+<div class="gen-2"></div>			 
+ <p><br /></p>
+ 
+ <p>
+<script type="text/javascript">
+/*自定义标签云，创建于2013-8-4*/
+var cpro_id = "u1336550";
+</script>
+<script src="http://cpro.baidustatic.com/cpro/ui/c.js" type="text/javascript"></script>
+</p>
+ <p><br /></p>
+
+          <div class="frame-yy">
+<script type="text/javascript"> 
+alimama_pid="mm_10455490_523526_10113917"; 
+alimama_width=160; 
+alimama_height=600; 
+</script> 
+<script src="http://a.alimama.cn/inf.js" type="text/javascript"> 
+</script>
+</div>
+<p>
+<br>
+<p>
+<p>
+	  
+</div>
+<div class="gen-2"></div>
+</div>
+
+
+<table width="960" border="0" cellspacing="0" cellpadding="0" height="2" bgcolor="#000000"  align="center">
+              <tr>
+                <td></td>
+              </tr>
+</table>
+<table width="960" border="0" cellspacing="0" cellpadding="0" align="center">
+<tr><td height="20" bgcolor="#CAC9BB" align="center" background="../simgs/homebottombg.gif">
+
+  </td>
+</tr>
+</table>
+
+<center>
+<table width="778" border="0" cellpadding="5" cellspacing="0">
+  <tbody>
+  <tr><td align="center">
+  
+  </td></tr>
+  <tr>
+    <td align="center">
+      <span class="white">
+       <a href="http://www.jdon.com/m/" target="_blank" >解道移动版 </a> | 
+       <a href="http://www.jdon.com/followus.html" target="_blank" >关注解道 </a> |       
+      <a href="http://www.jdon.com/forum/feed/feedback.jsp" target="_blank" >联系解道 </a> | 
+      <a href="http://www.jdon.com/aboutsite.htm" target="_blank" >关于解道 </a>| 
+         <a href="http://www.jdon.com/advert.htm" target="_blank" >广告联系</a> | <a 
+      href="http://www.jdon.com/sitemap.html" target="_blank" >网站地图</a> | <a 
+     
+      onclick="this.style.behavior='url(#default#homepage)';this.setHomePage('http://www.jdon.com/');" 
+      href="#">设为首页</a></span><br />
+        </span><span class="nava"><br />
+      <a href="http://www.miibeian.gov.cn/" target="_blank" >沪ICP证12033263</a> <a 
+      href="http://www.jdon.com/forum/feed/feedback.jsp" target="_blank">如有意见请与我们联系</a> <a 
+      href="http://www.jdon.com/jdonframework/index.htm" >Powered by JdonFramework </a></span></td>
+</tr>
+  </tbody></table>
+  
+
+</center>
+
+
+<!-- #BeginEditable "EditRegion3" --><!-- #EndEditable -->
+
+
+
+
+<div id="isNewMessage" style="display:no">
+	<div class="icos"><a id="msg_min" title="最小化" href="javascript:void 0">_</a><a id="msg_close" title="关闭" href="javascript:void 0">×</a></div>  
+	<div id="msg_title">您有新消息</div>  <div id="msg_content"></div>
+</div>
+ 
+<script>
+if (readCookie('username') != null)
+    checkmsg('/shortmessage/checknewmessage.shtml');
+else
+    checkmsg('/forum/checknewmessage.shtml');
+	
+
+var username = readCookie("username");
+if (username != null){          
+  	  document.getElementById("loggedInfo").innerHTML = " 欢迎" + decode64(username);
+   }		
+</script>
+
+
+<script>
+  load('/query/threadApprovedTagsList.shtml', function(xhr) {				 
+  	       document.getElementById("approved").innerHTML = xhr.responseText;
+			});
+</script>
+
+<script type="text/javascript">/*120*270，创建于2012-3-23*/ var cpro_id = 'u818950';</script><script src="http://cpro.baidu.com/cpro/ui/f.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F7e3d5668768124ec82f8795927ee448e' type='text/javascript'%3E%3C/script%3E"));
+</script>
+
+</body>
+<!-- #EndTemplate --></html>

@@ -1,0 +1,835 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>builder pattern--建造者模式 - 专注c++ - 博客频道 - CSDN.NET</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="buildre pattern称建造者模式Builder设计模式，提供一种封装机制来隔离出构成复杂对象的各个子对象的变化，从而保持系统中的相对稳定的将这些子对象组合在一起的算法不随着需求的改变而改变。&#160;Separate the construction of a complex object from its representation so that the same constr" />
+<script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+<link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/dark1/css/style.css?v=1.1" />
+<link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/couhujia/rss/list" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+</head>
+<body>
+<script src="http://csdnimg.cn/pubnav/js/pub_topnav_2011.js"type="text/javascript"></script>
+
+<div id="container">
+<div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h1><a href="http://blog.csdn.net/couhujia">专注c++</a></h1>
+            <h2>不积跬步无以至千里，不积小流无以成江海</h2>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg"></div>
+    <div class="navigator">
+        <ul>
+            <li id="btnContents"><a href="http://blog.csdn.net/couhujia?viewmode=contents"><span><img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+            <li id="btnView"><a href="http://blog.csdn.net/couhujia?viewmode=list"><span><img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+            <li id="btnRss"><a href="http://blog.csdn.net/couhujia/rss/list"><span><img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>
+</ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "couhujia";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/couhujia";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";
+</script>
+
+<div id="body">
+<div id="main">
+<div class="main">
+<div class="notice"> 
+
+<a href="https://code.csdn.net/blog/12" target="_blank">
+<font color=red>公告：博客新增直接引用代码功能</font></a>
+
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://www.csdn.net/article/2013-07-24/2816320" target="_blank"><font color=blue>专访谭海燕：移动互联网开发的那些事
+</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/9495139
+"target="_blank">
+<font color=red>CSDN博客频道自定义域名、标签搜索功能上线啦！
+
+
+ </font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/adali/article/details/9813651"target="_blank">
+<font color=blue>独一无二的职位：开源社区经理 
+ </font></a>
+
+
+
+
+</div>
+<div id="article_details" class="details">
+    <div class="article_title">
+    <span class="ico ico_type_Original"></span>
+    <h3>
+        <span class="link_title"><a href="/couhujia/article/details/8365256">
+        builder pattern--建造者模式
+        </a></span>
+    </h3>
+</div>
+
+        
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="/couhujia/article/category/1310130">设计模式</a> 
+        </span>
+    <span class="link_postdate">2012-12-21 19:26</span>
+    <span class="link_view" title="阅读次数">151人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments">评论</a>(0)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:collectArticle('builder pattern--建造者模式','8365256');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report"  onclick="javascript:report(8365256,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href='http://blog.csdn.net/tag/details.html?tag=%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f' target=_blank>设计模式</a></div>
+
+
+    
+<div id="article_content" class="article_content">
+
+<div><span style="font-size:16px; font-family:微软雅黑">buildre pattern称建造者模式</span></div>
+<div><span style="font-family:微软雅黑; font-size:16px"><span lang="EN-US">Builder</span>设计模式，提供一种封装机制来隔离出构成复杂对象的各个子对象的变化，从而保持系统中的相对稳定的将这些子对象组合在一起的算法不随着需求的改变而改变。</span></div>
+<div><span style="font-size:16px; font-family:微软雅黑">&nbsp;</span></div>
+<div><span style="color:#0000ff; font-family:微软雅黑; font-size:16px"><span lang="EN-US">Separate the construction of a complex object from its representation so that the same construction process can create different representations.</span><span lang="EN-US">&nbsp;&nbsp;-
+ GoF</span></span></div>
+<div>
+<p><img src="http://pic002.cnblogs.com/images/2012/32873/2012121301184119.png" alt=""></p>
+<p><span style="font-family:微软雅黑; font-size:16px">建造者（<span lang="EN-US">Builder</span>）：</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">给出一个抽象接口，以规范产品对象的各个组成成分的建造。一般而言，此接口独立于应用程序的商业逻辑。模式中直接创建产品对象的是具体建造者（<span lang="EN-US">ConcreteBuilder</span>）角色。具体建造者类必须实现这个接口所要求的方法：一个是建造方法，另一个是结果返还方法。</span></p>
+<p><span lang="EN-US" style="font-family:微软雅黑; font-size:16px">&nbsp;</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">具体建造者（<span lang="EN-US">Concrete Builder</span>）：</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">担任这个角色的是于应用程序紧密相关的类，它们在应用程序调用下创建产品实例。这个角色主要完成的任务包括：</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px"><span lang="EN-US">-&nbsp;</span>实现<span lang="EN-US">Builder</span>角色提供的接口，一步一步完成创建产品实例的过程。</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px"><span lang="EN-US">-&nbsp;</span>在建造过程完成后，提供产品的实例。</span></p>
+<p><span lang="EN-US" style="font-family:微软雅黑; font-size:16px">&nbsp;</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">指导者（<span lang="EN-US">Director</span>）：</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">担任这个角色的类调用具体建造者角色以创建产品对象。导演者并没有产品类的具体知识，真正拥有产品类的具体知识的是具体建造者对象。</span></p>
+<p><span lang="EN-US" style="font-family:微软雅黑; font-size:16px">&nbsp;</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">产品（<span lang="EN-US">Product</span>）：</span></p>
+<p><span style="font-family:微软雅黑; font-size:16px">产品便是需要建造的复杂对象。</span></p>
+<div><span style="font-family:微软雅黑; font-size:16px">实例：</span></div>
+<div><span style="font-family:微软雅黑; font-size:16px">例如所有的汽车的构建其实是有轮子(Michelin--米其林,Bridgestone--普利司通)、发动机(China,America)、外壳(Normal,Special)三大部分组成。</span></div>
+<div>
+<div class="cnblogs_code">
+<pre><span style="color:#008080">  1</span> <span style="color:#008000">//</span><span style="color:#008000">------------------------三个组成该汽车的基类-----------------------------
+</span><span style="color:#008080">  2</span> <span style="color:#008000">//</span><span style="color:#008000">abstract part
+</span><span style="color:#008080">  3</span> <span style="color:#008000">//</span><span style="color:#008000">其实属性可以有很多，这里就不一一列出来。</span>
+<span style="color:#008080">  4</span> <span style="color:#0000ff">class</span><span style="color:#000000"> wheel
+</span><span style="color:#008080">  5</span> <span style="color:#000000">{
+</span><span style="color:#008080">  6</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">  7</span>         wheel(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> l)
+</span><span style="color:#008080">  8</span> <span style="color:#000000">        :name(n),loadCapacity(l)
+</span><span style="color:#008080">  9</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 10</span>         <span style="color:#0000ff">virtual</span> std::<span style="color:#0000ff">string</span> getName( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 11</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">int</span> getLG( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 12</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 13</span>     <span style="color:#0000ff">protected</span><span style="color:#000000">:
+</span><span style="color:#008080"> 14</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> name;
+</span><span style="color:#008080"> 15</span>         <span style="color:#0000ff">int</span> loadCapacity;         <span style="color:#008000">//</span><span style="color:#008000">负载能力</span>
+<span style="color:#008080"> 16</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 17</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 18</span> 
+<span style="color:#008080"> 19</span> <span style="color:#0000ff">class</span><span style="color:#000000"> engine
+</span><span style="color:#008080"> 20</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 21</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080"> 22</span>         engine(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> s)
+</span><span style="color:#008080"> 23</span> <span style="color:#000000">        :name(n),speed(s)
+</span><span style="color:#008080"> 24</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 25</span>         <span style="color:#0000ff">virtual</span> std::<span style="color:#0000ff">string</span> getName( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 26</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">int</span> getSpeed( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 27</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 28</span>     <span style="color:#0000ff">protected</span><span style="color:#000000">:
+</span><span style="color:#008080"> 29</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> name;
+</span><span style="color:#008080"> 30</span>         <span style="color:#0000ff">int</span> speed ;                   <span style="color:#008000">//</span><span style="color:#008000">转速</span>
+<span style="color:#008080"> 31</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 32</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 33</span> 
+<span style="color:#008080"> 34</span> <span style="color:#0000ff">class</span><span style="color:#000000"> shell
+</span><span style="color:#008080"> 35</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 36</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080"> 37</span>         shell(std::<span style="color:#0000ff">string</span> n,std::<span style="color:#0000ff">string</span><span style="color:#000000"> c)
+</span><span style="color:#008080"> 38</span> <span style="color:#000000">        :name(n),color(c)
+</span><span style="color:#008080"> 39</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 40</span>         <span style="color:#0000ff">virtual</span> std::<span style="color:#0000ff">string</span> getName( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 41</span>         <span style="color:#0000ff">virtual</span> std::<span style="color:#0000ff">string</span> getColor( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080"> 42</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 43</span>     <span style="color:#0000ff">protected</span><span style="color:#000000">:
+</span><span style="color:#008080"> 44</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> name;
+</span><span style="color:#008080"> 45</span>         std::<span style="color:#0000ff">string</span> color        <span style="color:#008000">//</span><span style="color:#008000">颜色</span>
+<span style="color:#008080"> 46</span> <span style="color:#000000">        ...
+</span><span style="color:#008080"> 47</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 48</span> 
+<span style="color:#008080"> 49</span> <span style="color:#008000">//</span><span style="color:#008000">------------------------继承上面基类wheel 的轮胎类-----------------------------
+</span><span style="color:#008080"> 50</span> <span style="color:#008000">//</span><span style="color:#008000">concerte part  
+</span><span style="color:#008080"> 51</span> <span style="color:#008000">//</span><span style="color:#008000">米其林轮胎</span>
+<span style="color:#008080"> 52</span> <span style="color:#0000ff">class</span> wheelMichelin:<span style="color:#0000ff">public</span><span style="color:#000000"> wheel
+</span><span style="color:#008080"> 53</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 54</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080"> 55</span>         wheelMichelin(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> l)
+</span><span style="color:#008080"> 56</span> <span style="color:#000000">        :wheel(n,l)
+</span><span style="color:#008080"> 57</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 58</span>        std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080"> 59</span>        <span style="color:#0000ff">int</span><span style="color:#000000"> getLG( );
+</span><span style="color:#008080"> 60</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 61</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> wheelMichelin::getName( )
+</span><span style="color:#008080"> 62</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 63</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080"> 64</span> <span style="color:#000000">}
+</span><span style="color:#008080"> 65</span> <span style="color:#0000ff">int</span><span style="color:#000000"> wheelMichelin::getLG( )
+</span><span style="color:#008080"> 66</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 67</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> loadCapacity;
+</span><span style="color:#008080"> 68</span> <span style="color:#000000">}
+</span><span style="color:#008080"> 69</span> 
+<span style="color:#008080"> 70</span> <span style="color:#008000">//</span><span style="color:#008000">普利司通轮胎</span>
+<span style="color:#008080"> 71</span> <span style="color:#0000ff">class</span> wheelBridgestone:<span style="color:#0000ff">public</span><span style="color:#000000"> wheel
+</span><span style="color:#008080"> 72</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 73</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080"> 74</span>         wheelBridgestone(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> l)
+</span><span style="color:#008080"> 75</span> <span style="color:#000000">        :wheel(n,l)
+</span><span style="color:#008080"> 76</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 77</span>        std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080"> 78</span>        <span style="color:#0000ff">int</span><span style="color:#000000"> getLG( );
+</span><span style="color:#008080"> 79</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 80</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> wheelBridgestone::getName( )
+</span><span style="color:#008080"> 81</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 82</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080"> 83</span> <span style="color:#000000">}
+</span><span style="color:#008080"> 84</span> <span style="color:#0000ff">int</span><span style="color:#000000"> wheelBridgestone::getLG( )
+</span><span style="color:#008080"> 85</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 86</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> loadCapacity;
+</span><span style="color:#008080"> 87</span> <span style="color:#000000">}
+</span><span style="color:#008080"> 88</span> <span style="color:#008000">//</span><span style="color:#008000">--------------------------继承上面基类engine的引擎类-----------------------------------------
+</span><span style="color:#008080"> 89</span> <span style="color:#008000">//</span><span style="color:#008000">中国制造</span>
+<span style="color:#008080"> 90</span> <span style="color:#0000ff">class</span> engineChina:<span style="color:#0000ff">public</span><span style="color:#000000"> engine
+</span><span style="color:#008080"> 91</span> <span style="color:#000000">{
+</span><span style="color:#008080"> 92</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080"> 93</span>         engineChina(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> s)
+</span><span style="color:#008080"> 94</span> <span style="color:#000000">        :engine(n,s)
+</span><span style="color:#008080"> 95</span> <span style="color:#000000">        {}
+</span><span style="color:#008080"> 96</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080"> 97</span>         <span style="color:#0000ff">int</span><span style="color:#000000"> getSpeed( );
+</span><span style="color:#008080"> 98</span> <span style="color:#000000">};
+</span><span style="color:#008080"> 99</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> engineChina::getName( )
+</span><span style="color:#008080">100</span> <span style="color:#000000">{
+</span><span style="color:#008080">101</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080">102</span> <span style="color:#000000">}
+</span><span style="color:#008080">103</span> <span style="color:#0000ff">int</span><span style="color:#000000"> engineChina::getSpeed( )
+</span><span style="color:#008080">104</span> <span style="color:#000000">{
+</span><span style="color:#008080">105</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> speed;
+</span><span style="color:#008080">106</span> <span style="color:#000000">}
+</span><span style="color:#008080">107</span> 
+<span style="color:#008080">108</span> <span style="color:#008000">//</span><span style="color:#008000">美国制造</span>
+<span style="color:#008080">109</span> <span style="color:#0000ff">class</span> engineAmerica:<span style="color:#0000ff">public</span><span style="color:#000000"> engine
+</span><span style="color:#008080">110</span> <span style="color:#000000">{
+</span><span style="color:#008080">111</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">112</span>         engineAmerica(std::<span style="color:#0000ff">string</span> n,<span style="color:#0000ff">int</span><span style="color:#000000"> s)
+</span><span style="color:#008080">113</span> <span style="color:#000000">        :engine(n,s)
+</span><span style="color:#008080">114</span> <span style="color:#000000">        {}
+</span><span style="color:#008080">115</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080">116</span>         <span style="color:#0000ff">int</span><span style="color:#000000"> getSpeed( );
+</span><span style="color:#008080">117</span> <span style="color:#000000">};
+</span><span style="color:#008080">118</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> engineAmerica::getName( )
+</span><span style="color:#008080">119</span> <span style="color:#000000">{
+</span><span style="color:#008080">120</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080">121</span> <span style="color:#000000">}
+</span><span style="color:#008080">122</span> <span style="color:#0000ff">int</span><span style="color:#000000"> engineAmerica::getSpeed( )
+</span><span style="color:#008080">123</span> <span style="color:#000000">{
+</span><span style="color:#008080">124</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> speed;
+</span><span style="color:#008080">125</span> <span style="color:#000000">}
+</span><span style="color:#008080">126</span> <span style="color:#008000">//</span><span style="color:#008000">----------------------------继承基类shell的外壳类--------------------------------------
+</span><span style="color:#008080">127</span> <span style="color:#008000">//</span><span style="color:#008000">普通</span>
+<span style="color:#008080">128</span> <span style="color:#0000ff">class</span> shellNormal:<span style="color:#0000ff">public</span><span style="color:#000000"> shell
+</span><span style="color:#008080">129</span> <span style="color:#000000">{
+</span><span style="color:#008080">130</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">131</span>         shellNormal(std::<span style="color:#0000ff">string</span> n,std::<span style="color:#0000ff">string</span><span style="color:#000000"> c)
+</span><span style="color:#008080">132</span> <span style="color:#000000">        :shell(n,c)
+</span><span style="color:#008080">133</span> <span style="color:#000000">        {}
+</span><span style="color:#008080">134</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080">135</span>         <span style="color:#0000ff">int</span><span style="color:#000000"> getColor( );
+</span><span style="color:#008080">136</span> <span style="color:#000000">};
+</span><span style="color:#008080">137</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> shellNormal::getName( )
+</span><span style="color:#008080">138</span> <span style="color:#000000">{
+</span><span style="color:#008080">139</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080">140</span> <span style="color:#000000">}
+</span><span style="color:#008080">141</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> shellNormal::getColor( )
+</span><span style="color:#008080">142</span> <span style="color:#000000">{
+</span><span style="color:#008080">143</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> color;
+</span><span style="color:#008080">144</span> <span style="color:#000000">}
+</span><span style="color:#008080">145</span> 
+<span style="color:#008080">146</span> <span style="color:#0000ff">class</span> shellSpecial:<span style="color:#0000ff">public</span><span style="color:#000000"> shell
+</span><span style="color:#008080">147</span> <span style="color:#000000">{
+</span><span style="color:#008080">148</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">149</span>         shellSpecial(std::<span style="color:#0000ff">string</span> n,std::<span style="color:#0000ff">string</span><span style="color:#000000"> c)
+</span><span style="color:#008080">150</span> <span style="color:#000000">        :name(n),color(c):shell(n,c)
+</span><span style="color:#008080">151</span> <span style="color:#000000">        {}
+</span><span style="color:#008080">152</span>         std::<span style="color:#0000ff">string</span><span style="color:#000000"> getName( );
+</span><span style="color:#008080">153</span>         <span style="color:#0000ff">int</span><span style="color:#000000"> getColor( );
+</span><span style="color:#008080">154</span> <span style="color:#000000">};
+</span><span style="color:#008080">155</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> shellSpecial::getName( )
+</span><span style="color:#008080">156</span> <span style="color:#000000">{
+</span><span style="color:#008080">157</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> name;
+</span><span style="color:#008080">158</span> <span style="color:#000000">}
+</span><span style="color:#008080">159</span> std::<span style="color:#0000ff">string</span><span style="color:#000000"> shellSpecial::getColor( )
+</span><span style="color:#008080">160</span> <span style="color:#000000">{
+</span><span style="color:#008080">161</span>     <span style="color:#0000ff">return</span><span style="color:#000000"> color;
+</span><span style="color:#008080">162</span> <span style="color:#000000">}
+</span><span style="color:#008080">163</span> <span style="color:#008000">//</span><span style="color:#008000">---------------------------产品的基类即车-------------------------------
+</span><span style="color:#008080">164</span> <span style="color:#008000">//</span><span style="color:#008000">abstract product
+</span><span style="color:#008080">165</span> <span style="color:#008000">//</span><span style="color:#008000">车由wheel,engine,shell组成</span>
+<span style="color:#008080">166</span> <span style="color:#0000ff">class</span><span style="color:#000000"> car
+</span><span style="color:#008080">167</span> <span style="color:#000000">{
+</span><span style="color:#008080">168</span>      <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">169</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> setwh(std::auto_ptr&lt;wheel&gt; w)=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">170</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> seten(std::auto_ptr&lt;engine&gt; e)=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">171</span>         virutal <span style="color:#0000ff">void</span> setsh(std::auto_ptr&lt;shell&gt; s)=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">172</span>         <span style="color:#0000ff">virtual</span> std::auto_ptr&lt;wheel&gt; getwh( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">173</span>         <span style="color:#0000ff">virtual</span> std::auto_ptr&lt;engine&gt; geten( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">174</span>         <span style="color:#0000ff">virtual</span> std::auto_ptr&lt;shell&gt; getsh( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">175</span>     <span style="color:#0000ff">protected</span><span style="color:#000000">:
+</span><span style="color:#008080">176</span>          std::auto_ptr&lt;wheel&gt;    pw;     <span style="color:#008000">//</span><span style="color:#008000">轮子</span>
+<span style="color:#008080">177</span>          std::auto_ptr&lt;engine&gt;  pe;     <span style="color:#008000">//</span><span style="color:#008000">发动机</span>
+<span style="color:#008080">178</span>          std::auto_ptr&lt;shell&gt;      ps;     <span style="color:#008000">//</span><span style="color:#008000">外壳    </span>
+<span style="color:#008080">179</span> <span style="color:#000000">};
+</span><span style="color:#008080">180</span> <span style="color:#008000">//</span><span style="color:#008000">------------------------------继承上面基类的车类---------------------------
+</span><span style="color:#008080">181</span> <span style="color:#008000">//</span><span style="color:#008000">concerte product</span>
+<span style="color:#008080">182</span> <span style="color:#0000ff">class</span> AudiCar:<span style="color:#0000ff">public</span><span style="color:#000000"> car
+</span><span style="color:#008080">183</span> <span style="color:#000000">{
+</span><span style="color:#008080">184</span>         <span style="color:#0000ff">public</span><span style="color:#000000">:     
+</span><span style="color:#008080">185</span>             <span style="color:#0000ff">void</span> setwh(std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> w);
+</span><span style="color:#008080">186</span>             <span style="color:#0000ff">void</span> seten(std::auto_ptr&lt;engine&gt;<span style="color:#000000"> e);
+</span><span style="color:#008080">187</span>             <span style="color:#0000ff">void</span> setsh(std::auto_ptr&lt;shell&gt;<span style="color:#000000"> s);
+</span><span style="color:#008080">188</span>             std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> getwh( );
+</span><span style="color:#008080">189</span>             std::auto_ptr&lt;engine&gt;<span style="color:#000000"> geten( );
+</span><span style="color:#008080">190</span>             std::auto_ptr&lt;shell&gt;<span style="color:#000000"> getsh( );
+</span><span style="color:#008080">191</span> <span style="color:#000000">};
+</span><span style="color:#008080">192</span> <span style="color:#0000ff">void</span> AudiCar::setwh(std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> w)
+</span><span style="color:#008080">193</span> <span style="color:#000000">{
+</span><span style="color:#008080">194</span>     pw=<span style="color:#000000">w;
+</span><span style="color:#008080">195</span> <span style="color:#000000">}
+</span><span style="color:#008080">196</span> <span style="color:#0000ff">void</span> AudiCar::seten(std::auto_ptr&lt;engine&gt;<span style="color:#000000"> e)
+</span><span style="color:#008080">197</span> <span style="color:#000000">{
+</span><span style="color:#008080">198</span>     pe=<span style="color:#000000">e;
+</span><span style="color:#008080">199</span> <span style="color:#000000">}
+</span><span style="color:#008080">200</span> <span style="color:#0000ff">void</span> AudiCar::setps(std::auto_ptr&lt;shell&gt;<span style="color:#000000"> s)
+</span><span style="color:#008080">201</span> <span style="color:#000000">{
+</span><span style="color:#008080">202</span>     ps=<span style="color:#000000">s;
+</span><span style="color:#008080">203</span> <span style="color:#000000">}
+</span><span style="color:#008080">204</span> wheel*<span style="color:#000000">  AudiCar::getwh( )
+</span><span style="color:#008080">205</span> <span style="color:#000000">{
+</span><span style="color:#008080">206</span>     <span style="color:#0000ff">if</span>(!pw.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">207</span> <span style="color:#000000">    {
+</span><span style="color:#008080">208</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error: pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">209</span> <span style="color:#000000">    }
+</span><span style="color:#008080">210</span>     <span style="color:#0000ff">return</span> wh.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">211</span> <span style="color:#000000">}
+</span><span style="color:#008080">212</span> engine*<span style="color:#000000">  AudiCar::geten( )
+</span><span style="color:#008080">213</span> <span style="color:#000000">{
+</span><span style="color:#008080">214</span>     <span style="color:#0000ff">if</span>(!pe.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">215</span> <span style="color:#000000">    {
+</span><span style="color:#008080">216</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error: pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">217</span> <span style="color:#000000">    }
+</span><span style="color:#008080">218</span>     <span style="color:#0000ff">return</span> pe.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">219</span> <span style="color:#000000">}
+</span><span style="color:#008080">220</span> shell*<span style="color:#000000"> AudiCar::getsh( )
+</span><span style="color:#008080">221</span> <span style="color:#000000">{
+</span><span style="color:#008080">222</span>     <span style="color:#0000ff">if</span>(!ps.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">223</span> <span style="color:#000000">    {
+</span><span style="color:#008080">224</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error:pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">225</span> <span style="color:#000000">    }
+</span><span style="color:#008080">226</span>     <span style="color:#0000ff">return</span> ps.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">227</span> <span style="color:#000000">}
+</span><span style="color:#008080">228</span> 
+<span style="color:#008080">229</span> <span style="color:#008000">//</span><span style="color:#008000">奔驰</span>
+<span style="color:#008080">230</span> <span style="color:#0000ff">class</span> BenzCar:<span style="color:#0000ff">public</span><span style="color:#000000"> car
+</span><span style="color:#008080">231</span> <span style="color:#000000">{
+</span><span style="color:#008080">232</span>         <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">233</span>             <span style="color:#0000ff">void</span> setwh(std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> w);
+</span><span style="color:#008080">234</span>             <span style="color:#0000ff">void</span> seten(std::auto_ptr&lt;engine&gt;<span style="color:#000000"> e);
+</span><span style="color:#008080">235</span>             <span style="color:#0000ff">void</span> setsh(std::auto_ptr&lt;shell&gt;<span style="color:#000000"> s);
+</span><span style="color:#008080">236</span>             std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> getwh( );
+</span><span style="color:#008080">237</span>             std::auto_ptr&lt;engine&gt;<span style="color:#000000"> geten( );
+</span><span style="color:#008080">238</span>             std::auto_ptr&lt;shell&gt;<span style="color:#000000"> getsh( );
+</span><span style="color:#008080">239</span> <span style="color:#000000">};
+</span><span style="color:#008080">240</span> BenzCar::setwh(std::auto_ptr&lt;wheel&gt;<span style="color:#000000"> w)
+</span><span style="color:#008080">241</span> <span style="color:#000000">{
+</span><span style="color:#008080">242</span>     pw=<span style="color:#000000">w;
+</span><span style="color:#008080">243</span> <span style="color:#000000">}
+</span><span style="color:#008080">244</span> BenzCar::seten(std::auto_ptr&lt;engine&gt;<span style="color:#000000"> e)
+</span><span style="color:#008080">245</span> <span style="color:#000000">{
+</span><span style="color:#008080">246</span>     pe=<span style="color:#000000">e;
+</span><span style="color:#008080">247</span> <span style="color:#000000">}
+</span><span style="color:#008080">248</span> BenzCar::setsh(std::auto_ptr&lt;shell&gt;<span style="color:#000000"> s)
+</span><span style="color:#008080">249</span> <span style="color:#000000">{
+</span><span style="color:#008080">250</span>     ps=<span style="color:#000000">s;
+</span><span style="color:#008080">251</span> <span style="color:#000000">}
+</span><span style="color:#008080">252</span> wheel*<span style="color:#000000">  BenzCar::getwh( )
+</span><span style="color:#008080">253</span> <span style="color:#000000">{
+</span><span style="color:#008080">254</span>     <span style="color:#0000ff">if</span>(!pw.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">255</span> <span style="color:#000000">    {
+</span><span style="color:#008080">256</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error: pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">257</span> <span style="color:#000000">    }
+</span><span style="color:#008080">258</span>     <span style="color:#0000ff">return</span> pw.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">259</span> <span style="color:#000000">}
+</span><span style="color:#008080">260</span> engine*<span style="color:#000000">  BenzCar::geten( )
+</span><span style="color:#008080">261</span> <span style="color:#000000">{
+</span><span style="color:#008080">262</span>     <span style="color:#0000ff">if</span>(!pe.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">263</span> <span style="color:#000000">    {
+</span><span style="color:#008080">264</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error: pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">265</span> <span style="color:#000000">    }
+</span><span style="color:#008080">266</span>     <span style="color:#0000ff">return</span> pe.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">267</span> <span style="color:#000000">}
+</span><span style="color:#008080">268</span> shell*<span style="color:#000000">  BenzCar::getsh( )
+</span><span style="color:#008080">269</span> <span style="color:#000000">{
+</span><span style="color:#008080">270</span>     <span style="color:#0000ff">if</span>(!ps.<span style="color:#0000ff">get</span><span style="color:#000000">( ))
+</span><span style="color:#008080">271</span> <span style="color:#000000">    {
+</span><span style="color:#008080">272</span>         <span style="color:#0000ff">throw</span> std::invalid_argument(<span style="color:#800000">&quot;</span><span style="color:#800000">Error:pointer is null!!</span><span style="color:#800000">&quot;</span><span style="color:#000000">);
+</span><span style="color:#008080">273</span> <span style="color:#000000">    }
+</span><span style="color:#008080">274</span>     <span style="color:#0000ff">return</span>  ps.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">275</span> <span style="color:#000000">}
+</span><span style="color:#008080">276</span> ------------------------------------------------------------------
+<span style="color:#008080">277</span> <span style="color:#0000ff">class</span><span style="color:#000000"> builder
+</span><span style="color:#008080">278</span> <span style="color:#000000">{
+</span><span style="color:#008080">279</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">280</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> buildWheel( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">281</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> buildEngine( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">282</span>         <span style="color:#0000ff">virtual</span> <span style="color:#0000ff">void</span> buildShell( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">283</span>         <span style="color:#0000ff">virtual</span> car*  getCar( )=<span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">284</span> <span style="color:#000000">};
+</span><span style="color:#008080">285</span> 
+<span style="color:#008080">286</span> <span style="color:#0000ff">class</span> BenzBuilder:<span style="color:#0000ff">public</span><span style="color:#000000"> builder
+</span><span style="color:#008080">287</span> <span style="color:#000000">{
+</span><span style="color:#008080">288</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">289</span> <span style="color:#000000">        BenzBuilder()
+</span><span style="color:#008080">290</span>         :c(<span style="color:#0000ff">new</span><span style="color:#000000"> BenzCar())
+</span><span style="color:#008080">291</span> <span style="color:#000000">        {}
+</span><span style="color:#008080">292</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildWheel();
+</span><span style="color:#008080">293</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildEngine();
+</span><span style="color:#008080">294</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildShell();
+</span><span style="color:#008080">295</span>         car*<span style="color:#000000"> getCar( );
+</span><span style="color:#008080">296</span>     <span style="color:#0000ff">private</span><span style="color:#000000">:
+</span><span style="color:#008080">297</span>         std::auto_ptr&lt;car&gt;<span style="color:#000000"> c;
+</span><span style="color:#008080">298</span> <span style="color:#000000">};
+</span><span style="color:#008080">299</span> 
+<span style="color:#008080">300</span> <span style="color:#008000">//</span><span style="color:#008000">生产奔驰的轮胎</span>
+<span style="color:#008080">301</span> <span style="color:#0000ff">void</span><span style="color:#000000"> BenzBuilder::buildWheel( )
+</span><span style="color:#008080">302</span> <span style="color:#000000">{
+</span><span style="color:#008080">303</span>     <span style="color:#008000">//</span><span style="color:#008000">采用米其林轮胎</span>
+<span style="color:#008080">304</span>     std::auto_ptr&lt;wheel&gt; w(<span style="color:#0000ff">new</span> wheelMichelin(<span style="color:#800000">&quot;</span><span style="color:#800000">Michelin</span><span style="color:#800000">&quot;</span>,<span style="color:#800080">270</span><span style="color:#000000"> ));
+</span><span style="color:#008080">305</span>     c-&gt;<span style="color:#000000">setwh(); 
+</span><span style="color:#008080">306</span> <span style="color:#000000">}
+</span><span style="color:#008080">307</span> 
+<span style="color:#008080">308</span> <span style="color:#008000">//</span><span style="color:#008000">生产奔驰的引擎</span>
+<span style="color:#008080">309</span> <span style="color:#0000ff">void</span><span style="color:#000000"> BenzBuilder::buildEngine( )
+</span><span style="color:#008080">310</span> <span style="color:#000000">{
+</span><span style="color:#008080">311</span>     <span style="color:#008000">//</span><span style="color:#008000">美国产引擎</span>
+<span style="color:#008080">312</span>     std::auto_ptr&lt;engine&gt; w(<span style="color:#0000ff">new</span> engineAmercia(<span style="color:#800000">&quot;</span><span style="color:#800000">Amercia</span><span style="color:#800000">&quot;</span>,<span style="color:#800080">300</span><span style="color:#000000">));
+</span><span style="color:#008080">313</span>     c-&gt;<span style="color:#000000">seten();
+</span><span style="color:#008080">314</span> <span style="color:#000000">}
+</span><span style="color:#008080">315</span> 
+<span style="color:#008080">316</span> <span style="color:#008000">//</span><span style="color:#008000">生产奔驰的外壳</span>
+<span style="color:#008080">317</span> <span style="color:#0000ff">void</span><span style="color:#000000"> BenzBuilder::buildShell( )
+</span><span style="color:#008080">318</span> <span style="color:#000000">{
+</span><span style="color:#008080">319</span>     std::auto_ptr&lt;sheel&gt; w(<span style="color:#0000ff">new</span> shellNormol(<span style="color:#800000">&quot;</span><span style="color:#800000">Normal</span><span style="color:#800000">&quot;</span>,<span style="color:#800000">&quot;</span><span style="color:#800000">Red</span><span style="color:#800000">&quot;</span><span style="color:#000000">));
+</span><span style="color:#008080">320</span>     c-&gt;<span style="color:#000000">setsh();
+</span><span style="color:#008080">321</span> <span style="color:#000000">}
+</span><span style="color:#008080">322</span> 
+<span style="color:#008080">323</span> std::auto_ptr&lt;car&gt;<span style="color:#000000"> BenzBuilder::getCar( )
+</span><span style="color:#008080">324</span> <span style="color:#000000">{
+</span><span style="color:#008080">325</span>     <span style="color:#0000ff">return</span> c.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">326</span> <span style="color:#000000">}
+</span><span style="color:#008080">327</span> 
+<span style="color:#008080">328</span> <span style="color:#0000ff">class</span> AudiBuilder:<span style="color:#0000ff">public</span><span style="color:#000000"> builder
+</span><span style="color:#008080">329</span> <span style="color:#000000">{
+</span><span style="color:#008080">330</span>    <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">331</span> <span style="color:#000000">        AudiBuilder( )
+</span><span style="color:#008080">332</span>         :c(<span style="color:#0000ff">new</span><span style="color:#000000"> AudiCar( ))
+</span><span style="color:#008080">333</span> <span style="color:#000000">        {}
+</span><span style="color:#008080">334</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildWheel( );
+</span><span style="color:#008080">335</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildEngine( );
+</span><span style="color:#008080">336</span>         <span style="color:#0000ff">void</span><span style="color:#000000"> buildShell( );
+</span><span style="color:#008080">337</span>         std::auto_ptr&lt;car&gt;<span style="color:#000000"> getCar( );
+</span><span style="color:#008080">338</span>     <span style="color:#0000ff">private</span><span style="color:#000000">:
+</span><span style="color:#008080">339</span>         std::auto_ptr&lt;car&gt;<span style="color:#000000"> c;
+</span><span style="color:#008080">340</span> <span style="color:#000000">};
+</span><span style="color:#008080">341</span> 
+<span style="color:#008080">342</span> <span style="color:#0000ff">void</span><span style="color:#000000"> AudiBuilder::buildWheel( )
+</span><span style="color:#008080">343</span> <span style="color:#000000">{
+</span><span style="color:#008080">344</span>      <span style="color:#008000">//</span><span style="color:#008000">采用高通</span>
+<span style="color:#008080">345</span>     std::auto_ptr&lt;wheel&gt; w(<span style="color:#0000ff">new</span> wheelBridgestone(<span style="color:#800000">&quot;</span><span style="color:#800000">Bridgestone</span><span style="color:#800000">&quot;</span>,<span style="color:#800080">250</span><span style="color:#000000">));
+</span><span style="color:#008080">346</span>     c-&gt;<span style="color:#000000">setwh( );
+</span><span style="color:#008080">347</span> <span style="color:#000000">}
+</span><span style="color:#008080">348</span> 
+<span style="color:#008080">349</span> <span style="color:#0000ff">void</span><span style="color:#000000"> AudiBuilder::buildEngine( )
+</span><span style="color:#008080">350</span> <span style="color:#000000">{
+</span><span style="color:#008080">351</span>     <span style="color:#008000">//</span><span style="color:#008000">中国产引擎</span>
+<span style="color:#008080">352</span>     std::auto_ptr&lt;engine&gt; w(<span style="color:#0000ff">new</span> EngineChina(<span style="color:#800000">&quot;</span><span style="color:#800000">China</span><span style="color:#800000">&quot;</span>,<span style="color:#800080">320</span><span style="color:#000000">));
+</span><span style="color:#008080">353</span>     c-&gt;<span style="color:#000000">seten( );
+</span><span style="color:#008080">354</span> <span style="color:#000000">}
+</span><span style="color:#008080">355</span> 
+<span style="color:#008080">356</span> <span style="color:#0000ff">void</span><span style="color:#000000"> AudiBuilder::buildShell( )
+</span><span style="color:#008080">357</span> <span style="color:#000000">{
+</span><span style="color:#008080">358</span>     std::auto_ptr&lt;shell&gt; w(<span style="color:#0000ff">new</span> ShellSpecial(<span style="color:#800000">&quot;</span><span style="color:#800000">Special</span><span style="color:#800000">&quot;</span>,<span style="color:#800000">&quot;</span><span style="color:#800000">white</span><span style="color:#800000">&quot;</span><span style="color:#000000">));
+</span><span style="color:#008080">359</span>     c-<span style="color:#000000">setsh(w);
+</span><span style="color:#008080">360</span> <span style="color:#000000">}
+</span><span style="color:#008080">361</span> 
+<span style="color:#008080">362</span> car*<span style="color:#000000"> AudiBuilder::getCar( )
+</span><span style="color:#008080">363</span> <span style="color:#000000">{
+</span><span style="color:#008080">364</span>     <span style="color:#0000ff">return</span> c.<span style="color:#0000ff">get</span><span style="color:#000000">( );
+</span><span style="color:#008080">365</span> <span style="color:#000000">}
+</span><span style="color:#008080">366</span> <span style="color:#008000">//</span><span style="color:#008000">------------------------------组装汽车--------------------------------------------</span>
+<span style="color:#008080">367</span> <span style="color:#0000ff">class</span><span style="color:#000000"> director
+</span><span style="color:#008080">368</span> <span style="color:#000000">{
+</span><span style="color:#008080">369</span>     <span style="color:#0000ff">public</span><span style="color:#000000">:
+</span><span style="color:#008080">370</span>         <span style="color:#0000ff">static</span> std::auto_ptr&lt;car&gt; construct(std::auto_ptr&lt;builder&gt;<span style="color:#000000"> b);
+</span><span style="color:#008080">371</span> <span style="color:#000000">}
+</span><span style="color:#008080">372</span> std::auto_ptr&lt;car&gt; director::construct( std::auto_ptr&lt;builder&gt;<span style="color:#000000"> b)
+</span><span style="color:#008080">373</span> <span style="color:#000000">{
+</span><span style="color:#008080">374</span>     b-&gt;<span style="color:#000000">buildWheel( );
+</span><span style="color:#008080">375</span>     b-&gt;<span style="color:#000000">buildEngine( );
+</span><span style="color:#008080">376</span>     b-&gt;<span style="color:#000000">buildShell( );
+</span><span style="color:#008080">377</span>     <span style="color:#0000ff">return</span> b-&gt;<span style="color:#000000">getCar( );
+</span><span style="color:#008080">378</span> <span style="color:#000000">}
+</span><span style="color:#008080">379</span> 
+<span style="color:#008080">380</span> <span style="color:#0000ff">int</span> main(<span style="color:#0000ff">int</span> argc,<span style="color:#0000ff">char</span> **<span style="color:#000000">argv)
+</span><span style="color:#008080">381</span> <span style="color:#000000">{
+</span><span style="color:#008080">382</span>     std::auto_ptr&lt;builder&gt; b(<span style="color:#0000ff">new</span><span style="color:#000000"> BenzBuilder( );
+</span><span style="color:#008080">383</span>     std::auto_ptr&lt;car&gt; c=<span style="color:#000000">director::construct(b);
+</span><span style="color:#008080">384</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The BenzCar's wheel is </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;getwh( )-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">385</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its  loadCapacity  is  </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;getwh( )-&gt;getLG( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">386</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The BenzCar's engine is made in </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;geten()-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl; 
+</span><span style="color:#008080">387</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its speed is </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;geten()-&gt;getSpeed()&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">388</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The BenzCar's shell is </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;getsh()-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">389</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its color is </span><span style="color:#800000">&quot;</span>&lt;&lt;c-&gt;getsh()-&gt;getColor()&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">390</span>     std::auto_ptr&lt;builder&gt; b2(<span style="color:#0000ff">new</span><span style="color:#000000"> AudiBuilder( );
+</span><span style="color:#008080">391</span>     std::auto_ptr&lt;car&gt; c2=<span style="color:#000000">director::construct(b2);
+</span><span style="color:#008080">392</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The AudiCar's wheel is </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;getwh( )-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">393</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its  loadCapacity  is  </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;getwh( )-&gt;getLG( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">394</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The AudiCar's engine is made in </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;geten()-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl; 
+</span><span style="color:#008080">395</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its speed is </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;geten()-&gt;getSpeed()&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">396</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">The AudiCar's shell is </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;getsh()-&gt;getName( )&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">397</span>     std::cout&lt;&lt;<span style="color:#800000">&quot;</span><span style="color:#800000">Its color is </span><span style="color:#800000">&quot;</span>&lt;&lt;c2-&gt;getsh()-&gt;getColor()&lt;&lt;<span style="color:#000000">std::endl;
+</span><span style="color:#008080">398</span>     <span style="color:#0000ff">return</span> <span style="color:#800080">0</span><span style="color:#000000">;
+</span><span style="color:#008080">399</span> }</pre>
+</div>
+<p><span style="font-family:微软雅黑; font-size:16px">结果</span></p>
+<p><img src="http://pic002.cnblogs.com/images/2012/32873/2012121301202041.jpg" alt=""></p>
+</div>
+</div>
+
+</div>
+
+<div class="share_buttons" id="sharePanel"></div>
+<!--192.168.100.33-->
+<div class="article_next_prev">
+    <li class="prev_article"><span>上一篇：</span><a href="/couhujia/article/details/8365254">abstract factory pattern--抽象工厂模式</a></li>
+    <li class="next_article"><span>下一篇：</span><a href="/couhujia/article/details/8365258">prototype pattern--原型模式</a></li>
+</div>
+
+
+    
+</div>
+<div id="ad_cen">
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "117306";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+<script type="text/javascript">
+    //new Ad(4, 'ad_cen');
+</script>
+<div id="comment_title" class="panel_head">查看评论<a name="comments"></a></div>
+<div id="comment_list"></div>
+<div id="comment_bar"></div>
+<div id="comment_form"></div>
+<div class="announce">* 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+<script type="text/javascript">
+    var fileName = '8365256';
+    var commentscount = 0;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+<div id="ad_bot"></div>
+<script type="text/javascript">
+    new Ad(5, 'ad_bot');
+</script>
+<div id="report_dialog"></div>
+
+<div id="d-top" style="display:none;">
+<a id="d-top-a" href="#" title="回到顶部">
+<img src="http://static.blog.csdn.net/images/top.png" alt="TOP" /></a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var d_top=$('#d-top');
+        document.onscroll=function(){
+            var scrTop=(document.body.scrollTop||document.documentElement.scrollTop);
+            if(scrTop>500){
+                d_top.show();
+            }else{
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function(){
+            scrollTo(0,0);
+            this.blur();
+            return false;
+        });
+    });
+</script>
+
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="side">
+<div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/couhujia" target="_blank">
+    <img src="http://avatar.csdn.net/1/D/8/1_couhujia.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/couhujia" class="user_name" target="_blank">couhujia</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+<a href="javascript:void(0);" class="letter" onclick="loginto(1)" title="[发私信]"></a>
+</div>
+<div id="blog_medal">
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>10479次</span></li>
+    <li>积分：<span>451分</span></li>
+    <li>排名：<span>千里之外</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>25篇</span></li>
+    <li>转载：<span>0篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>35条</span></li>
+</ul>
+</ul>
+</div>
+
+<div class="panel">
+<ul class="panel_body" style="padding:0;">
+<script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script> 
+<script type="text/javascript"> 
+BAIDU_CLB_preloadSlots("724643","117306"); 
+</script>
+<script type="text/javascript">BAIDU_CLB_fillSlot("724643");</script> 
+</ul>
+</div>
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="submit" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+<li>
+<a href="http://blog.csdn.net/couhujia/article/category/1310128">C++基础</a><span>(8)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/couhujia/article/category/1310130">设计模式</a><span>(14)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/couhujia/article/category/1310434">c++</a><span>(3)</span>
+</li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/couhujia/article/month/2013/01">2013年01月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/couhujia/article/month/2012/12">2012年12月</a><span>(18)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head"><span>阅读排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/couhujia/article/details/8474905" title="怎么有效的防止内存泄漏">怎么有效的防止内存泄漏</a><span>(5043)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8484226" title="flyweight pattern -- 享元模式">flyweight pattern -- 享元模式</a><span>(403)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8477986" title="facade pattern--外观模式">facade pattern--外观模式</a><span>(381)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8492296" title="proxy patter --代理模式">proxy patter --代理模式</a><span>(362)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8487358" title="c++多态深入分析--单继承">c++多态深入分析--单继承</a><span>(326)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8499642" title="Chain of Responsibility -- 责任链模式">Chain of Responsibility -- 责任链模式</a><span>(312)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8543628" title="command pattern -- 命令模式">command pattern -- 命令模式</a><span>(298)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365252" title="singleton pattern--单件模式">singleton pattern--单件模式</a><span>(263)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365249" title="C++文件依存关系">C++文件依存关系</a><span>(210)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365263" title="decorator pattern -- 装饰模式">decorator pattern -- 装饰模式</a><span>(209)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/couhujia/article/details/8474905" title="怎么有效的防止内存泄漏">怎么有效的防止内存泄漏</a><span>(22)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8484226" title="flyweight pattern -- 享元模式">flyweight pattern -- 享元模式</a><span>(6)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365249" title="C++文件依存关系">C++文件依存关系</a><span>(2)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8499642" title="Chain of Responsibility -- 责任链模式">Chain of Responsibility -- 责任链模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8492296" title="proxy patter --代理模式">proxy patter --代理模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365252" title="singleton pattern--单件模式">singleton pattern--单件模式</a><span>(1)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365260" title="bridge pattern -- 桥接模式">bridge pattern -- 桥接模式</a><span>(0)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365261" title="composite pattern -- 组合模式">composite pattern -- 组合模式</a><span>(0)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365263" title="decorator pattern -- 装饰模式">decorator pattern -- 装饰模式</a><span>(0)</span>
+</li>
+<li>
+<a href="/couhujia/article/details/8365243" title="#include是怎么样工作的？">#include是怎么样工作的？</a><span>(0)</span>
+</li>
+</ul>
+</div>
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+    <a href="/couhujia/article/details/8474905#comments">怎么有效的防止内存泄漏</a>
+    <p style="margin:0px;"><a href="/yangxiaoluck" class="user_name">yangxiaoluck</a>:
+嗯，任何要分配空间的地方其实都需要去try住，不仅仅是构造函数里面。
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8365252#comments">singleton pattern--单件模式</a>
+    <p style="margin:0px;"><a href="/fanzheng220112583" class="user_name">fanzheng220112583</a>:
+你的这些方法模式的术语从何而来？感觉C++中，不同人用的术语太过于烦杂，没有统一性。。。
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8365249#comments">C++文件依存关系</a>
+    <p style="margin:0px;"><a href="/Blues1021" class="user_name">Blues1021</a>:
+把1000个文件分成几个模块做成DLL,不必生成一个巨型的.obj，也就不需要这样别有用心的设计了吧...
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8474905#comments">怎么有效的防止内存泄漏</a>
+    <p style="margin:0px;"><a href="/lanbinbin1986129" class="user_name">lanbinbin1986129</a>:
+这种方法确实不错，以前都是这样去解决这个问题：Image* GetImage(){if(pImg =...
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8474905#comments">怎么有效的防止内存泄漏</a>
+    <p style="margin:0px;"><a href="/qiaojava1" class="user_name">qiaojava1</a>:
+嗯,挺有用的~~
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8499642#comments">Chain of Responsibility -- 责任链模式</a>
+    <p style="margin:0px;"><a href="/xzshen2011" class="user_name">xzshen2011</a>:
+我们来实现这一场景吧
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8474905#comments">怎么有效的防止内存泄漏</a>
+    <p style="margin:0px;"><a href="/hanmingjun" class="user_name">hanmingjun</a>:
+没记错的话，好像exception c++里面有更好的方法哎
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8499642#comments">Chain of Responsibility -- 责任链模式</a>
+    <p style="margin:0px;"><a href="/wwwsily" class="user_name">wwwsily</a>:
+厉害 学习了
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8474905#comments">怎么有效的防止内存泄漏</a>
+    <p style="margin:0px;"><a href="/dyx1024" class="user_name">dyx1024</a>:
+对于这种场景 ，我通常的做法是，分配完后立刻检查是否分配成功，如上，pImg成功，但pVoi没成功，...
+    </p>
+    </li>
+    <li>
+    <a href="/couhujia/article/details/8492296#comments">proxy patter --代理模式</a>
+    <p style="margin:0px;"><a href="/shen823797837" class="user_name">shen823797837</a>:
+貌似代理类里面的对象漏掉了吧？不然怎么知道要代理谁呢？
+    </p>
+    </li>
+</ul>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js?v=1.1"></script>
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=691650"></script>
+
+<script type="text/javascript">
+document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date()/120000).toString(36) + '="></'+'script>');
+</script>
+
+<script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js?v=1"></script>
+
+
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+
+<script type="text/javascript" src="http://zz.csdn.net/js/count.js"></script>
+
+</div>
+</body>
+</html>

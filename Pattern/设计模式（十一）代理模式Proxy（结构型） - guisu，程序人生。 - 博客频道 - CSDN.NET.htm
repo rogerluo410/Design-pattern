@@ -1,0 +1,707 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>设计模式（十一）代理模式Proxy（结构型） - guisu，程序人生。              - 博客频道 - CSDN.NET</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="设计模式（十一）代理模式Proxy（结构型）1.概述&#160; &#160; &#160; &#160;因为某个对象消耗太多资源,而且你的代码并不是每个逻辑路径都需要此对象, 你曾有过延迟创建对象的想法吗 ( if和else就是不同的两条逻辑路径) ? 你有想过限制访问某个对象,也就是说,提供一组方法给普通用户,特别方法给管理员用户?以上两种需求都非常类似，并且都需要解决一个更大的问题:你如何提供一致的接口给某个对" />
+<script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+<link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/default/css/style.css?v=1.1" />
+<link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/hguisu/rss/list" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/simple.css" />
+</head>
+<body>
+<script src="http://csdnimg.cn/pubnav/js/pub_topnav_2011.js"type="text/javascript"></script>
+
+<div id="container">
+<div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h1><a href="http://blog.csdn.net/hguisu">guisu，程序人生。             </a></h1>
+            <h2>能干的人解决问题。智慧的人绕开问题(A clever person solves a problem. A wise person avoids it)</h2>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg"></div>
+    <div class="navigator">
+        <ul>
+            <li id="btnContents"><a href="http://blog.csdn.net/hguisu?viewmode=contents"><span><img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+            <li id="btnView"><a href="http://blog.csdn.net/hguisu?viewmode=list"><span><img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+            <li id="btnRss"><a href="http://blog.csdn.net/hguisu/rss/list"><span><img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>
+</ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "hguisu";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/hguisu";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";
+</script>
+
+<div id="body">
+<div id="main">
+<div class="main">
+<div class="notice"> 
+
+<a href="https://code.csdn.net/blog/12" target="_blank">
+<font color=red>公告：博客新增直接引用代码功能</font></a>
+
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://www.csdn.net/article/2013-08-06/2816471" target="_blank"><font color=blue>专访李铁军：从医生到金山首席安全专家的转变 
+</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/9495139
+"target="_blank">
+<font color=red>CSDN博客频道自定义域名、标签搜索功能上线啦！
+
+
+ </font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/adali/article/details/9813651"target="_blank">
+<font color=blue>独一无二的职位：开源社区经理 
+ </font></a>
+
+
+
+
+</div>
+<div id="article_details" class="details">
+    <div class="article_title">
+    <span class="ico ico_type_Original"></span>
+    <h3>
+        <span class="link_title"><a href="/hguisu/article/details/7542143">
+        设计模式（十一）代理模式Proxy（结构型）
+        </a></span>
+    </h3>
+</div>
+
+        
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="/hguisu/article/category/1133340">设计模式</a> 
+        </span>
+    <span class="link_postdate">2012-05-08 11:51</span>
+    <span class="link_view" title="阅读次数">6189人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments">评论</a>(2)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:collectArticle('设计模式（十一）代理模式Proxy（结构型）','7542143');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report"  onclick="javascript:report(7542143,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href='http://blog.csdn.net/tag/details.html?tag=%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f' target=_blank>设计模式</a><a href='http://blog.csdn.net/tag/details.html?tag=function' target=_blank>function</a><a href='http://blog.csdn.net/tag/details.html?tag=decorator' target=_blank>decorator</a><a href='http://blog.csdn.net/tag/details.html?tag=instantiation' target=_blank>instantiation</a><a href='http://blog.csdn.net/tag/details.html?tag=reference' target=_blank>reference</a><a href='http://blog.csdn.net/tag/details.html?tag=class' target=_blank>class</a></div>
+
+
+    
+<div id="article_content" class="article_content">
+
+<p style="line-height:1.5"><span style="font-family:Arial"><strong><span style="font-size:12px; color:#3333ff"><span class="ico ico_type_Original" style="display:inline-block; width:19px; height:19px; margin-top:0px; margin-right:2px; margin-bottom:0px; margin-left:0px; vertical-align:middle; font-family:'Microsoft YaHei'; line-height:30px; text-align:left"></span><span style="font-family:'Microsoft YaHei'; line-height:30px; text-align:left">&nbsp;</span></span></strong></span></p>
+<h3 style="margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px; display:inline; font-family:'Microsoft YaHei'; font-weight:normal; line-height:30px; vertical-align:middle; text-align:left">
+<span class="link_title"><a href="http://blog.csdn.net/hguisu/article/details/7542143" style="text-decoration:none">设计模式（十一）代理模式Proxy（结构型）</a></span></h3>
+<br>
+<p></p>
+<p style="line-height:1.5"><span style="font-family:Arial"><strong>1.概述</strong></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p style="line-height:1.5"><span style="font-family:Arial">&nbsp; &nbsp; &nbsp; &nbsp;因为某个对象消耗太多资源,而且你的代码并不是每个逻辑路径都需要此对象, 你曾有过延迟创建对象的想法吗 ( if和else就是不同的两条逻辑路径) ? 你有想过限制访问某个对象,也就是说,提供一组方法给普通用户,特别方法给管理员用户?以上两种需求都非常类&#20284;，并且都需要解决一个更大的问题:你如何提供一致的接口给某个对象让它可以改变其内部功能,或者是从来不存在的功能?<span style="color:#333333">&nbsp;可以<span style="color:#080808">通过</span>引入一个新的对象，来实现对真实对象的操作或者将新的对象作为真实对象的一个替身。即<span style="line-height:1.5; font-family:Arial; color:rgb(51,51,51)">代理对象。它可以</span><span style="line-height:1.5; font-family:Arial; color:rgb(255,51,0)"><a href="http://blog.csdn.net/hguisu/article/details/7542143">在客户端和目标对象之间起到中介的作用</a></span><span style="line-height:1.5; font-family:Arial; color:rgb(51,51,51)">，并且可以</span><span style="line-height:1.5; font-family:Arial; color:rgb(255,51,0)"><a href="http://blog.csdn.net/hguisu/article/details/7542143">通过代理对象去掉客户不能看到的内容和服务或者添加客户需要的额外服务</a></span><span style="line-height:1.5; font-family:Arial; color:rgb(51,51,51)">。</span></span></span></p>
+<p style="line-height:1.5"><span style="font-family:Arial">例子1：经典例子就是网络代理，你想访问facebook或者twitter ，如何绕过GFW，找个代理网站。</span></p>
+<p style="line-height:1.5"><span style="font-family:Arial">例子2：可以调用远程代理处理一些操作如图：</span></p>
+<p style="line-height:1.5"><span style="font-family:Arial"><img src="http://my.csdn.net/uploads/201205/08/1336449099_9165.png" alt=""></span></p>
+</blockquote>
+<p></p>
+<p style="line-height:1.5"><span style="font-family:Arial"><strong>2.问题:</strong></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p></p>
+<p style="line-height:1.5"><span style="font-family:Arial">你怎样才能在不直接操作对象的情况下,对此对象进行访问?</span></p>
+</blockquote>
+<p style="line-height:1.5"><span style="font-family:Arial"><strong>3.解决方案</strong></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p><span style="font-family:Arial"><a href="http://blog.csdn.net/hguisu/article/details/7542143">代理模式:&nbsp;</a><span style="line-height:1.5">为其他对象提供一种代理，并以控制对这个对象的访问。（</span><span style="line-height:1.5; color:rgb(51,51,51)">Provide a</span><span style="line-height:1.5; color:rgb(255,51,0)">surrogate
+ or placeholder</span><span style="line-height:1.5; color:rgb(51,51,51)"> for</span><span style="line-height:1.5; color:rgb(255,51,0)">another
+</span><span style="line-height:1.5; color:rgb(51,51,51)">object to</span><span style="line-height:1.5; color:rgb(255,51,0)">control access</span><span style="line-height:1.5; color:rgb(51,51,51)"> to it.&nbsp;</span><span style="line-height:1.5">）而</span><span style="line-height:1.5">对一个对象进行访问控制的一个原因是为了只有在我们确实需要这个对象时才对它进行</span><span style="line-height:1.5">创建和初始化。它</span><span style="line-height:1.5">是给某一个对象提供一个替代者(占位者),使之在client对象和subject对象之间编码更有效率。代理可以提供延迟实例化(lazy
+ instantiation),控制访问, 等等，包括只在调用中传递。 一个处理纯本地资源的代理有时被称作虚拟代理。远程服务的代理常常称为远程代理。强制 控制访问的代理称为保护代理。</span></span></p>
+</blockquote>
+<p></p>
+<p></p>
+<p style="line-height:1.5"><span style="font-family:Arial"><strong>4.实用性</strong></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p></p>
+<p></p>
+<p style="line-height:1.5"><span style="font-family:Arial">在需要用比较通用和复杂的对象指针代替简单的指针的时候，使用 Proxy模式。下面是一些可以使用Proxy模式常见情况：<br>
+<span style="color:#3333ff">1) 远程代理（Remote &nbsp;Proxy）</span>为一个位于不同的地址空间的对象提供一个本地的代理对象。这个不同的地址空间可以是在同一台主机中，也可是在另一台主机中，远程代理又叫做大使(Ambassador)<br>
+<span style="color:#3333ff">2) 虚拟代理（Virtual Proxy）</span>根据需要创建开销很大的对象。如果需要创建一个资源消耗较大的对象，先创建一个消耗相对较小的对象来表示，真实对象只在需要时才会被真正创建。&nbsp;<br>
+<span style="color:#3333ff">3) 保护代理（Protection Proxy）</span>控制对原始对象的访问。保护代理用于对象应该有不同的访问权限的时候。<br>
+<span style="color:#3333ff">4) 智能指引（Smart Reference）</span>取代了简单的指针，它在访问对象时执行一些附加操作。<br>
+<span style="color:#3333ff">5) Copy-on-Write代理：</span>它是虚拟代理的一种，把复制（克隆）操作延迟到只有在客户端真正需要时才执行。一般来说，对象的深克隆是一个开销较大的操作，Copy-on-Write代理可以让这个操作延迟，只有对象被用到的时候才被克隆。</span></p>
+</blockquote>
+<p><span style="color:rgb(85,85,85); font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><span style="font-family:Arial"><strong>5. 结构</strong></span></span></p>
+<p><span style="color:rgb(85,85,85); font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><span style="font-family:Arial"><strong><span style="white-space:pre"></span>Uml图：</strong></span></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p></p>
+<p style="line-height:1.5"><span style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:26px; white-space:pre"><img src="http://my.csdn.net/uploads/201205/07/1336371130_8874.jpg" alt=""><br>
+</span></p>
+<p style="line-height:1.5"><span style="color:rgb(51,51,51); font-family:Arial; font-size:14px; line-height:26px; white-space:pre"><span style="color:#080808">简单结构示意图：</span><br>
+</span></p>
+<p><span style="font-family:Arial; color:#080808"><span style="font-size:14px; line-height:26px; white-space:pre"><img src="http://my.csdn.net/uploads/201205/08/1336453143_5004.png" alt=""><br>
+</span></span></p>
+<p><span style="font-family:Arial; color:#080808"><span style="font-size:14px; line-height:26px; white-space:pre"><br>
+</span></span></p>
+</blockquote>
+<span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre"><strong>6.模式的组成</strong><br>
+</span></span>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px"><span style="font-family:Arial"><span style="font-size:14px; line-height:26px; white-space:pre"><span style="color:#3333ff"><a href="http://blog.csdn.net/hguisu/article/details/7542143">1)代理角色(Proxy):</a></span><span style="color:#333333"><br>
+</span></span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">. 保存一个引用使得代理可以访问实体。若 RealSubject和Subject的接口相同，Proxy会引用Subject。<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">. 提供一个与Subject的接口相同的接口，这样代理就可以用来替代实体。<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">. 控制对实体的存取，并可能负责创建和删除它。<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">. 其他功能依赖于代理的类型：<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">• Remote Proxy负责对请求及其参数进行编码，并向不同地址空间中的实体发送已编</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">码的请求。<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">• Virtual Proxy可以缓存实体的附加信息，以便延迟对它的访问。<br>
+</span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">• Protection Proxy检查调用者是否具有实现一个请求所必需的访问权限。<br>
+</span></span><span style="font-family:Arial"><span style="font-size:14px; line-height:26px; white-space:pre"><span style="color:#3333ff"><a href="http://blog.csdn.net/hguisu/article/details/7542143">2) 抽象主题角色(Subject):</a></span><span style="color:#333333">定义真实主题角色RealSubject
+ 和 抽象主题角色Proxy的共用接口，这样就在任何使用RealSubject的地方都可以使<br>
+</span></span></span><span style="font-family:Arial; color:#333333"><span style="font-size:14px; line-height:26px; white-space:pre">用Proxy。代理主题通过持有真实主题RealSubject的引用,不但可以控制真实主题RealSubject的创建或删除,可以在真实主题RealSubject被调用前进行拦截,或在调用后进行某些操作.&nbsp;<br>
+</span></span>
+<p><span style="font-family:Arial"><span style="font-size:14px; line-height:26px; white-space:pre"><span style="color:#3333ff"><a href="http://blog.csdn.net/hguisu/article/details/7542143">3) 真实主题角色(RealSubject):</a></span></span><span style="color:#333333">定义了代理角色(proxy)所代表的具体对象.&nbsp;</span></span></p>
+</blockquote>
+<p></p>
+<p style="line-height:1.5"><strong>7. 效果</strong><br>
+</p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p></p>
+<p style="line-height:1.5">Proxy模式在访问对象时引入了一定程度的间接性。根据代理的类型，附加的间接性有多种用途：<br>
+<span style="color:#3333ff">1) Remote Proxy</span>可以隐藏一个对象存在于不同地址空间的事实。也<span style="line-height:1.5; color:rgb(255,51,0)">使得客户端可以访问在远程机器上的对象</span><span style="line-height:1.5; color:rgb(51,51,51)">，远程机器可能具有更好的计算性能与处理速度，可以快速响应并处理客户端请求。</span><br>
+<span style="color:#3333ff">2) Virtual Proxy</span> 可以进行最优化，例如根据要求创建对象。即通过使用一个小对象来代表一个大对象，可以减少系统资源的消耗。<br>
+<span style="color:#3333ff">3) Protection Proxies和Smart Reference</span>都允许在访问一个对象时有一些附加的内务处理（Housekeeping task） 。</p>
+<p style="line-height:1.5">Proxy模式还可以对用户隐藏另一种称之为写时复制<span style="color:#3333ff">（copy-on-write）</span>的优化方式，该优化与根据需要创建对象有关。拷贝一个庞大而复杂的对象是一种开销很大的操作，如果这个拷贝根本没有被修改，那么这些开销就没有必要。用代理延迟这一拷贝过程，我们可以保证只有当这个对象被修改的时候才对它进行拷贝。在实现copy-on-write时必须对实体进行引用计数。拷贝代理仅会增加引用计数。只有当用户请求一个修改该实体的操作时，代理才会真正的拷贝它。在这种情况下，代理还必须减<br>
+少实体的引用计数。当引用的数目为零时，这个实体将被删除。copy-on-write可以大幅度的降低拷贝庞大实体时的开销。</p>
+<p style="line-height:1.5"></p>
+<div><span style="color:#333333">代理模式能够</span><span style="color:#FF3300">协调调用者和被调用者</span><span style="color:#333333">，在一定程度上降低了系统的耦合度。</span></div>
+<br>
+<strong>代理模式的缺点</strong><br>
+由于在客户端和真实主题之间增加了代理对象，因此有些类型的代理模式可能会造成请求的处理速度变慢。<br>
+实现代理模式需要额外的工作，有些代理模式的实现非常复杂。
+<p></p>
+</blockquote>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"></span></p>
+<strong>8.实现</strong><br>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p>我们用获取天气预报的例子说明代理模式：</p>
+<p></p>
+<pre name="code" class="php">&lt;?php
+/** 
+* 代理模式 
+* 
+* 为其他对象提供一个代理以控制这个对象的访问 
+* 
+*/ 
+/**
+ *  抽象主题角色(Subject):天气
+ *
+ */
+interface Weather
+{
+	public function request($city);
+	public function display($city);
+	public function isValidCity($city);
+
+}
+
+/**
+ * 真实主题角色(RealSubject):
+ *
+ */
+class RealWeather implements Weather 
+{
+	protected $_url = 'http://www.google.com/ig/api?&amp;oe=utf-8&amp;hl=zh-cn&amp;weather=';
+	protected $_weatherXml = '' ;
+	function __construct(){
+		
+	}
+
+	public function request($city){
+		$this-&gt;_weatherXml = file_get_contents($this-&gt;_url . $city );
+	}
+	public function display($city ){
+		if ($this-&gt;_weatherXml == '') {
+			$this-&gt;request($city);
+		}
+		//$this-&gt;_weatherXml = mb_convert_encoding($this-&gt;_weatherXml, 'UTF-8', 'GB2312');
+		$weatherxml = simplexml_load_string($this-&gt;_weatherXml);
+		$low = intval($weatherxml-&gt;weather-&gt;forecast_conditions[0]-&gt;low-&gt;attributes());
+		$high = $weatherxml-&gt;weather-&gt;forecast_conditions[0]-&gt;high-&gt;attributes();
+		$icon= 'http://www.google.com'. $weatherxml-&gt;weather-&gt;forecast_conditions[0]-&gt;icon-&gt;attributes();
+		$condition=$weatherxml-&gt;weather-&gt;forecast_conditions[0]-&gt;condition-&gt;attributes();
+		$weather = date('Y年n月j日').'  天气预报：&lt;span class=&quot;cor_ff6c00 f_bold&quot;&gt;'.$city_names[$city].' &lt;/span&gt;  &lt;img class=&quot;v_middle&quot; src=&quot;'.$icon.'&quot; alt=&quot;'.$condition.'&quot; width=&quot;16&quot; height=&quot;17&quot; align=&quot;absmiddle&quot; /&gt; &lt;span class=&quot;f_bold&quot;&gt;&lt;/span&gt;：    '.$low.'°C ~ '.$high.'°C '.$condition;
+		echo  $weather;
+	}
+	
+	public function isValidCity($city){
+		
+	}
+
+}
+
+/**
+ * 代理角色(Proxy):延迟代理 
+ *
+ */
+class ProxyWeather  implements Weather {
+	private $_client ;
+	private function client() {
+		if (! $this-&gt;_client instanceof RealWeather) {
+			$this-&gt;_client = new RealWeather();
+		}
+		return $this-&gt;_client;
+
+	}
+	public function request($city){
+		$this-&gt;_client()-&gt;request($city);
+	}
+
+	public function isValidCity($city) {
+		return $this-&gt;_client()-&gt;isValidCity($city);
+	}
+
+
+	public function display($city) {
+		return $this-&gt;client()-&gt;display($city);
+	}
+}
+/**
+ * 代理角色(Proxy):动态代理
+ *
+ */
+class GenericProxyWeather {
+
+	protected $_subject;
+	public function __construct($subject) {
+		$this-&gt;_subject = $subject;
+	}
+
+	public function __call($method, $args) {
+		return call_user_func_array(
+		array($this-&gt;_subject, $method),
+		$args);
+	}
+
+}
+
+
+
+class Client{
+	
+	static function main(){
+		$proxy = new ProxyWeather();
+		$report = $proxy-&gt;display('beijing');
+	}
+	static function Genericmain(){
+		$proxy = new GenericProxyWeather(new RealWeather());
+		$report = $proxy-&gt;display('beijing');
+	}
+}
+header('Content-type:text/html;charset=UTF-8');
+Client::main();
+//Client::Genericmain();</pre><br>
+<p></p>
+</blockquote>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"></span></p>
+</blockquote>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><strong>9. 与其他相关模式</strong></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p><span style="font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><span style="color:#3333ff"><a href="http://blog.csdn.net/hguisu/article/details/7527842">1）适配器模式Adapter
+</a>：</span></span><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">适配器Adapter 为它所适配的对象提供了一个不同的接口。相反，代理提供</span><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">了与它的实体相同的接口。然而，用于访问保护的代理可能会拒绝执行实体会执行的操作，</span><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">因此，它的接口实际上可能只是实体接口的一个子集。</span></p>
+<p><span style="font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><span style="color:#3333ff"><a href="http://blog.csdn.net/hguisu/article/details/7531960">2) 装饰器模式Decorator</a></span></span><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">：尽管Decorator的实现部分与代理相&#20284;，但
+ Decorator的目的不一样。</span><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">Decorator为对象添加一个或多个功能，而代理则控制对对象的访问。</span></p>
+</blockquote>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><strong>10.总结</strong></span></p>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><span style="white-space:pre">代理模式在很多情况下都非常有用,特别是你想强行控制一个对象的时候,比如:延迟加载,监视状态变更的方法等等</span></span></p>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">&nbsp;1、“增加一层间接层”是软件系统中对许多负责问题的一种常见解决方法。在面向对象系统中，直接使用某些对象会带来很多问题，作为间接层的proxy对象便是解决这一问题的常用手段。</span></p>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">2、具体proxy设计模式的实现方法、实现粒度都相差很大，有些可能对单个对象作细粒度的控制，有些可能对组件模块提供抽象代理层，在架构层次对对象作proxy。</span></p>
+</blockquote>
+<blockquote style="margin:0 0 0 40px; border:none; padding:0px">
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre">3、proxy并不一定要求保持接口的一致性，只要能够实现间接控制，有时候损及一些透明性是可以接受的。例如上面的那个例子，代理类型ProxyClass和被代理类型LongDistanceClass可以不用继承自同一个接口，正像GoF《设计模式》中说的：为其他对象提供一种代理以控制这个对象的访问。代理类型从某种角度上讲也可以起到控制被代理类型的访问的作用。</span></p>
+</blockquote>
+<p><span style="color:rgb(85,85,85); font-family:Arial; font-size:14px; line-height:24px; text-align:left; text-indent:15px; white-space:pre"><br>
+</span></p>
+
+</div>
+
+<div class="share_buttons" id="sharePanel"></div>
+<!--192.168.100.33-->
+<div class="article_next_prev">
+    <li class="prev_article"><span>上一篇：</span><a href="/hguisu/article/details/7535792">设计模式（十）享元模式Flyweight（结构型）</a></li>
+    <li class="next_article"><span>下一篇：</span><a href="/hguisu/article/details/7547231">设计模式 ( 十二 ) 职责链模式(Chain of Responsibility)（对象行为</a></li>
+</div>
+
+
+            <div id="digg" ArticleId="7542143">
+            <dl id="btnDigg" class="digg digg_disable">
+                <dt>顶</dt>
+                <dd>0</dd>
+            </dl>
+            <dl id="btnBury" class="digg digg_disable">
+                <dt>踩</dt>
+                <dd>0</dd>
+            </dl>
+        </div>
+
+</div>
+<div id="ad_cen">
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "117306";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+<script type="text/javascript">
+    //new Ad(4, 'ad_cen');
+</script>
+<div id="comment_title" class="panel_head">查看评论<a name="comments"></a></div>
+<div id="comment_list"></div>
+<div id="comment_bar"></div>
+<div id="comment_form"></div>
+<div class="announce">* 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+<script type="text/javascript">
+    var fileName = '7542143';
+    var commentscount = 2;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+<div id="ad_bot"></div>
+<script type="text/javascript">
+    new Ad(5, 'ad_bot');
+</script>
+<div id="report_dialog"></div>
+
+<div id="d-top" style="display:none;">
+<a id="d-top-a" href="#" title="回到顶部">
+<img src="http://static.blog.csdn.net/images/top.png" alt="TOP" /></a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var d_top=$('#d-top');
+        document.onscroll=function(){
+            var scrTop=(document.body.scrollTop||document.documentElement.scrollTop);
+            if(scrTop>500){
+                d_top.show();
+            }else{
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function(){
+            scrollTo(0,0);
+            this.blur();
+            return false;
+        });
+    });
+</script>
+
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="side">
+<div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/hguisu" target="_blank">
+    <img src="http://avatar.csdn.net/F/2/A/1_hguisu.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/hguisu" class="user_name" target="_blank">hguisu</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+<a href="javascript:void(0);" class="letter" onclick="loginto(1)" title="[发私信]"></a>
+</div>
+<div id="blog_medal">
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>419081次</span></li>
+    <li>积分：<span>6124分</span></li>
+    <li>排名：<span>第668名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>187篇</span></li>
+    <li>转载：<span>1篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>284条</span></li>
+</ul>
+</ul>
+</div>
+
+<div class="panel">
+<ul class="panel_body" style="padding:0;">
+<script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script> 
+<script type="text/javascript"> 
+BAIDU_CLB_preloadSlots("724643","117306"); 
+</script>
+<script type="text/javascript">BAIDU_CLB_fillSlot("724643");</script> 
+</ul>
+</div>
+<div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1253451">操作系统</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/796967">Linux</a><span>(17)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/796963">MySQL</a><span>(11)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/796962">PHP</a><span>(40)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1104862">PHP内核</a><span>(11)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/796968">技术人生</a><span>(6)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1054628">数据结构与算法</a><span>(27)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1072794">云计算hadoop</a><span>(20)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1075597">网络知识</a><span>(7)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1080443">c/c++</a><span>(22)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1099674">memcache</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1111071">HipHop</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1112019">计算机原理</a><span>(4)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1114530">Java</a><span>(7)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1122753">socket网络编程</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1133340">设计模式</a><span>(26)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1151353">AOP</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1152364">重构</a><span>(11)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1173389">重构与模式</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1209788">大数据处理</a><span>(11)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1230933">搜索引擎Search Engine</a><span>(15)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1302430">HTML5</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1309674">Android</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1422000">webserver</a><span>(3)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/hguisu/article/category/1429288">NOSQL</a><span>(5)</span>
+</li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/hguisu/article/month/2013/07">2013年07月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2013/06">2013年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2013/05">2013年05月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2013/03">2013年03月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2013/02">2013年02月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2013/01">2013年01月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/12">2012年12月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/11">2012年11月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/10">2012年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/09">2012年09月</a><span>(15)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/08">2012年08月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/07">2012年07月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/06">2012年06月</a><span>(14)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/05">2012年05月</a><span>(29)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/04">2012年04月</a><span>(26)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/03">2012年03月</a><span>(27)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2012/02">2012年02月</a><span>(18)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2011/12">2011年12月</a><span>(7)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2011/01">2011年01月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2010/07">2010年07月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/hguisu/article/month/2007/12">2007年12月</a><span>(2)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head"><span>阅读排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/hguisu/article/details/7527842" title="设计模式（五）适配器模式Adapter（结构型）">设计模式（五）适配器模式Adapter（结构型）</a><span>(20887)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7237395" title="Hadoop集群配置（最全面总结）">Hadoop集群配置（最全面总结）</a><span>(19825)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7244413" title="hbase安装配置（整合到hadoop）">hbase安装配置（整合到hadoop）</a><span>(17446)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7282050" title="Hadoop Hive与Hbase整合">Hadoop Hive与Hbase整合</a><span>(10576)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7558249" title="设计模式 ( 十八 ) 策略模式Strategy（对象行为型）">设计模式 ( 十八 ) 策略模式Strategy（对象行为型）</a><span>(10268)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7786014" title="B-树和B+树的应用：数据搜索和数据库索引">B-树和B+树的应用：数据搜索和数据库索引</a><span>(10252)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7453390" title="socket阻塞与非阻塞，同步与异步、I/O模型">socket阻塞与非阻塞，同步与异步、I/O模型</a><span>(10109)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/5731880" title="Mysql 多表联合查询效率分析及优化">Mysql 多表联合查询效率分析及优化</a><span>(8869)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7244991" title="谷歌三大核心技术（三）Google BigTable中文版">谷歌三大核心技术（三）Google BigTable中文版</a><span>(8821)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7259716" title="HDFS写入和读取流程">HDFS写入和读取流程</a><span>(7522)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/hguisu/article/details/7558249" title="设计模式 ( 十八 ) 策略模式Strategy（对象行为型）">设计模式 ( 十八 ) 策略模式Strategy（对象行为型）</a><span>(33)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7259716" title="HDFS写入和读取流程">HDFS写入和读取流程</a><span>(17)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7529194" title="设计模式（六）桥连模式Bridge（结构型）">设计模式（六）桥连模式Bridge（结构型）</a><span>(14)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7237395" title="Hadoop集群配置（最全面总结）">Hadoop集群配置（最全面总结）</a><span>(13)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7880288" title="海量数据处理算法—Bit-Map">海量数据处理算法—Bit-Map</a><span>(12)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7448528" title="PHP SOCKET编程">PHP SOCKET编程</a><span>(11)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7282050" title="Hadoop Hive与Hbase整合">Hadoop Hive与Hbase整合</a><span>(10)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7505909" title="设计模式（一）工厂模式Factory（创建型）">设计模式（一）工厂模式Factory（创建型）</a><span>(9)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7244413" title="hbase安装配置（整合到hadoop）">hbase安装配置（整合到hadoop）</a><span>(8)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7470695" title="C语言中的宏定义">C语言中的宏定义</a><span>(7)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+    <a href="/hguisu/article/details/7244413#comments">hbase安装配置（整合到hadoop）</a>
+    <p style="margin:0px;"><a href="/hguisu" class="user_name">hguisu</a>:
+@liunian324:安装sync吧，然后自动同步到其他机子。
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7244413#comments">hbase安装配置（整合到hadoop）</a>
+    <p style="margin:0px;"><a href="/liunian324" class="user_name">liunian324</a>:
+@liunian324:经过测试，确实是可以，谢谢
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7453390#comments">socket阻塞与非阻塞，同步与异步、I/O模型</a>
+    <p style="margin:0px;"><a href="/zyf837368104" class="user_name">zyf837368104</a>:
+学习中
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7244413#comments">hbase安装配置（整合到hadoop）</a>
+    <p style="margin:0px;"><a href="/liunian324" class="user_name">liunian324</a>:
+关于ssh无密码登录的问题，我现在有100台服务器，能否在一个namenode机器上 生成 ssh-...
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/9246859#comments">Storm集群安装详解</a>
+    <p style="margin:0px;"><a href="/FansUnion" class="user_name">FansUnion</a>:
+了解下。
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7394430#comments">探究PHP底层</a>
+    <p style="margin:0px;"><a href="/wusuopuBUPT" class="user_name">wusuopuBUPT</a>:
+好文。
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7880288#comments">海量数据处理算法—Bit-Map</a>
+    <p style="margin:0px;"><a href="/wusuopuBUPT" class="user_name">wusuopuBUPT</a>:
+好文！学习了
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7529194#comments">设计模式（六）桥连模式Bridge（结构型）</a>
+    <p style="margin:0px;"><a href="/wanyouzhu" class="user_name">wanyouzhu</a>:
+@leileiqianghuahau:我也是这么认为的，这里的应用是某个抽象的一个方面，把这个方面提...
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7557252#comments">设计模式 ( 十七) 状态模式State（对象行为型）</a>
+    <p style="margin:0px;"><a href="/dreamrealised" class="user_name">dreamrealised</a>:
+很好，学习啦
+    </p>
+    </li>
+    <li>
+    <a href="/hguisu/article/details/7564039#comments">设计模式 ( 十九 ) 模板方法模式Template method（类行为型）</a>
+    <p style="margin:0px;"><a href="/llyrike" class="user_name">llyrike</a>:
+学习了，很好！
+    </p>
+    </li>
+</ul>
+</div>
+</div>
+<div class="clear"></div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js?v=1.1"></script>
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=265069"></script>
+
+<script type="text/javascript">
+document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date()/120000).toString(36) + '="></'+'script>');
+</script>
+
+<script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js?v=1"></script>
+
+
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+
+<script type="text/javascript" src="http://zz.csdn.net/js/count.js"></script>
+
+</div>
+</body>
+</html>

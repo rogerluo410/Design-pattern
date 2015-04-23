@@ -1,0 +1,575 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>设计模式：Bridge模式 - superbeck的专栏 - 博客频道 - CSDN.NET</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="如果你想要写一个游戏，并且想让这个游戏同时支持PC和手机，那么怎么样的设计可以避免写两套代码，并且不影响可扩展性呢？说起来还是比较简单的，只要把对平台的依赖部分抽取成抽象的接口（比如说绘图部分），并且针对抽取出来的接口，分别实现PC版和手机版就行了。系统的其他部分只要调用那套抽取出来的接口就可以完成所有的功能。这样来看，系统的其他部分是不依赖具体的平台的，也就具有了良好的扩展性。这个就是Bridge模式的应用。" />
+<script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+<link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/default/css/style.css?v=1.1" />
+<link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/superbeck/rss/list" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/default.css" />
+</head>
+<body>
+<script src="http://csdnimg.cn/pubnav/js/pub_topnav_2011.js"type="text/javascript"></script>
+
+<div id="container">
+<div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h1><a href="http://blog.csdn.net/superbeck">superbeck的专栏</a></h1>
+            <h2>以小事始，方知大事之成败</h2>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg"></div>
+    <div class="navigator">
+        <ul>
+            <li id="btnContents"><a href="http://blog.csdn.net/superbeck?viewmode=contents"><span><img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+            <li id="btnView"><a href="http://blog.csdn.net/superbeck?viewmode=list"><span><img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+            <li id="btnRss"><a href="http://blog.csdn.net/superbeck/rss/list"><span><img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>
+</ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "superbeck";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/superbeck";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";
+</script>
+
+<div id="body">
+<div id="main">
+<div class="main">
+<div class="notice"> 
+
+<a href="https://code.csdn.net/blog/12" target="_blank">
+<font color=red>公告：博客新增直接引用代码功能</font></a>
+
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://www.csdn.net/article/2013-07-24/2816320" target="_blank"><font color=blue>专访谭海燕：移动互联网开发的那些事
+</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/csdnproduct/article/details/9495139
+"target="_blank">
+<font color=red>CSDN博客频道自定义域名、标签搜索功能上线啦！
+
+
+ </font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/adali/article/details/9813651"target="_blank">
+<font color=blue>独一无二的职位：开源社区经理 
+ </font></a>
+
+
+
+
+</div>
+<div id="article_details" class="details">
+    <div class="article_title">
+    <span class="ico ico_type_Original"></span>
+    <h3>
+        <span class="link_title"><a href="/superbeck/article/details/5969884">
+        设计模式：Bridge模式
+        </a></span>
+    </h3>
+</div>
+
+        
+    <div class="article_manage">
+        <span class="link_categories">
+        分类：
+            <a href="/superbeck/article/category/207307">java</a> 
+            <a href="/superbeck/article/category/490099">设计/UML/MDA</a> 
+        </span>
+    <span class="link_postdate">2010-10-27 18:06</span>
+    <span class="link_view" title="阅读次数">634人阅读</span>
+    <span class="link_comments" title="评论次数"><a href="#comments">评论</a>(2)</span>
+    <span class="link_collect"><a href="javascript:void(0);" onclick="javascript:collectArticle('设计模式：Bridge模式','5969884');return false;" title="收藏">收藏</a></span>
+    <span class="link_report"><a href="#report"  onclick="javascript:report(5969884,2);return false;" title="举报">举报</a></span>
+    
+</div>
+<div class="tag2box"><a href='http://blog.csdn.net/tag/details.html?tag=%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%bc%8f' target=_blank>设计模式</a><a href='http://blog.csdn.net/tag/details.html?tag=jdbc' target=_blank>jdbc</a><a href='http://blog.csdn.net/tag/details.html?tag=%e6%95%b0%e6%8d%ae%e5%ba%93' target=_blank>数据库</a><a href='http://blog.csdn.net/tag/details.html?tag=decorator' target=_blank>decorator</a><a href='http://blog.csdn.net/tag/details.html?tag=%e6%89%a9%e5%b1%95' target=_blank>扩展</a><a href='http://blog.csdn.net/tag/details.html?tag=interface' target=_blank>interface</a></div>
+
+
+    
+<div id="article_content" class="article_content">
+<p><span style="font-size: small;">如果你想要写一个游戏，并且想让这个游戏同时支持PC和手机，那么怎么样的设计可以避免写两套代码，并且不影响可扩展性呢？说起来还是比较简单的，只要把对平台的依赖部分抽取成抽象的接口（比如说绘图部分），并且针对抽取出来的接口，分别实现PC版和手机版就行了。系统的其他部分只要调用那套抽取出来的接口就可以完成所有的功能。这样来看，系统的其他部分是不依赖具体的平台的，也就具有了良好的扩展性。这个就是Bridge模式的应用。<br />
+<br />
+<span style="font-size: medium;"><strong>定义</strong>
+</span>
+<br />
+将抽象和实现相分离，使二者可以独立的变化。(GOF)<br />
+<br />
+<strong><span style="font-size: medium;">结构图</span>
+</strong>
+<br />
+<img src="http://hi.csdn.net/attachment/201010/27/0_1288173736zY3s.gif" alt="" />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 图一：Bridge模式的一个结构图<br />
+<br />
+<strong><span style="font-size: medium;">例子</span>
+</strong>
+<br />
+任何设计模式都是应用于不同的需求的，这里我们构造了一个有关汽车的需求来应用Bridge模式。（不过，由于个人对车了解不多，所以有可能例子不是很恰当，不要纠结于这一点哦）<br />
+<br />
+<strong>★需求</strong>
+<br />
+1. 概括的讲，我们的需求就是实现各种各样的汽车。从细节上讲，我们知道，汽车<br />
+以用途分类，有卡车，巴士，小汽车等类别；<br />
+以动力系统分类，有汽油型，柴油型，电力型，天然气型，生物能，油电混合型，太阳能型等等。<br />
+也就是说，有汽油型的卡车，巴士，小汽车，也有柴油型的卡车，巴士，小汽车，当然还有其他各种类型的卡车，巴士，小汽车。<br />
+这里为了方便，我们对需求做一个简化，只考虑卡车、巴士，汽油型和柴油型。也就是说，两两组合之后，就会有四种车型：汽油型卡车，柴油型卡车，汽油型巴士和柴油型巴士。<br />
+<br />
+2. 任何车都有开始和停止的功能。<br />
+<br />
+3. 卡车有载货的功能，巴士有载客的功能。<br />
+<br />
+<strong>★初次设计</strong>
+<br />
+根据以上的需求描述，想必所有人都可以设计出如图二所示的类结构来。<br />
+<img src="http://hi.csdn.net/attachment/201010/27/0_1288173800iL4T.gif" alt="" />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 图二：关于汽车的最初的设计图<br />
+<br />
+<strong>★重构</strong>
+<br />
+虽然图二所示的图任何人都可以设计出来，但估计没有人是满意这样的设计的。这样的设计，不但重复代码多，而且要扩展或有所修改的话，所有的类都得大动干戈。<br />
+这里我们就对其做一次重构。<br />
+从需求3我们知道，卡车和巴士分别有专有的功能（载货，载客），并且这个功能是和动力系统无关的，而开车和停止的功能都是与动力系统有关的。所以我们这里先把卡车和巴士区分出来，并且分别实现载货和载客的功能。那么就是如图三所示的结构了。<br />
+<img src="http://hi.csdn.net/attachment/201010/27/0_1288173821i4A2.gif" alt="" />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 图三：一次重构后的设计图<br />
+<br />
+<strong>★再重构</strong>
+<br />
+经过图三的重构之后，结构就清晰了些，并且代码的重复度也减少了一部分（载货，载客）。但是我们还是可以看出不足之处，较明显的地方就是，同样的动力系统，它的开始和停止肯定是基本相似的。<br />
+<br />
+其实这里是有一个隐藏需求的。<br />
+1. 对于同一种类型的车来说，无论采用的动力系统是哪一种，其驾驶方法是相同的。也就是说，会开汽油型卡车的司机开起柴油型的卡车来也是驾轻就熟的。否则，有多少种车就得有多少种驾驶方法的话，司机没事就得考驾照了，人手n本驾照，很恐怖的。<br />
+2. 同样，对于同一种动力系统来说，无论安装在哪一种车型上，恐怕主要是动力的大小是不同的，启动和停止的方法(在软件系统中来说应该是接口)应该是相同的。<br />
+<br />
+下面我们根据以上的隐藏需求对这个设计进行再重构。既然所有的车都有动力系统，而且每个动力系统的接口都可以是一样的，那我们就把这个动力系统提取出来作为一个单独的类。这也是应用了Bridge模式之后的结果。具体结构图参见图四。<br />
+<br />
+<img src="http://hi.csdn.net/attachment/201010/27/0_12881738470nBt.gif" alt="" />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 图四：应用了Bridge模式之后的重构结果<br />
+<br />
+<strong><span style="font-size: medium;">JDBC的例子</span>
+</strong>
+<br />
+网络上看到有朋友对JDBC到底是不是应用了Bridge模式有一些分歧。这一点我们还是很明确的，JDBC确实是应用了Bridge模式。<br />
+JDBC其实只是Sun定义出来的一套规范，java.sql下的真正内容大部分都是接口。而其他的数据库厂商则可以分别提供自己的jdbc实现来支持自家的数据库。作为应用开发者，完全可以只靠Sun的这套JDBC接口来完成所有的应用开发，而无需关心数据库是哪一家的。作为数据库厂商，只需要提供自家数据库的实现就可以了，完全不需要考虑自家的数据库会被用来做什么样的应用。这也就是抽象（数据库的应用）和实现（各厂商的JDBC实现）的分离。<br />
+再说到代码，想想我们用JDBC写数据库应用时，与具体数据库关联的代码只有一行。<br />
+<textarea cols="50" rows="15" name="code" class="java">Class.forName(&quot;com.mysql.jdbc.Driver&quot;); // driver name</textarea>
+ <br />
+这行代码所做的事情也非常简单，就是创建一个自己(com.mysql.jdbc.Driver)的实例，注册到java.sql.DriverManager中。<br />
+<textarea cols="50" rows="15" name="code" class="java">package com.mysql.jdbc;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+public class Driver extends NonRegisteringDriver
+    implements java.sql.Driver
+{
+    static
+    {
+        try
+        {
+            DriverManager.registerDriver(new Driver());
+        } catch (SQLException E) {
+            throw new RuntimeException(&quot;Can't register driver!&quot;);
+        }
+    }
+}</textarea>
+ <br />
+<br />
+之后在调用DriverManager.getConnection()时就会从已注册的driver中寻找合适的项并返回。<br />
+<br />
+简单的一个结构图如图五。<br />
+<img src="http://hi.csdn.net/attachment/201010/27/0_12881739378zxw.gif" alt="" />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 图五：JDBC中Bridge模式的应用<br />
+<br />
+在这里，有一点小小的意外，DriverManager提供了一组静态方法，并且私有化了自己的构造函数。可以简单的认为只有一个实例存在（实际上数据是以类变量的形式存在）。这个看似意外的设计，导致DriverManager不再具备扩展性，但其实是一种更合适的设计，因为我们也不需要n多的DriverManager的实例存在，也不需要它还有任何扩展的可能。<br />
+JDBC的Bridge模式其实可以算是Bridge模式的另外一种表现。我们在应用设计时，也要考虑具体的场景和需求，来选用合适的结构，而不能一味的套用。<br />
+另外需要说明一下的是，图五只是用了两个类来表示Bridge模式的应用。但在JDBC中，并不仅仅是Driver被抽象出来了，还有Connection，Statement等一组Interface都是被抽象出来的实现。<br />
+<br />
+<strong><span style="font-size: medium;">适用于</span>
+</strong>
+<br />
+★类的某部分功能会剧烈变化时，把抽象和实现分离，则抽象的部分在开发时不会受到实现部分变动的影响<br />
+★想要使抽象和实现部分分别开发，互不依赖时<br />
+★想要避免抽象和实现的强耦合，使实现部分可以在运行时被动态的切换<br />
+★想要对抽象隐藏实现部分或者对实现隐藏抽象部分时（外包时可用）<br />
+<br />
+<strong><span style="font-size: medium;">心得总结</span>
+</strong>
+<br />
+Bridge模式所应用的核心设计思想是针对接口编程，组合优于继承。<br />
+从上面的汽车的设计重构过程来看，我们也可以得出这样的结论，如果在抽取类的时候就严格按照CRC的原则进行的话，那么动力系统是很容易被抽取成一个单独的类，并且作为汽车的一个组成部分而存在。当然，Car和Engine之间只能是聚合关系，而不是组合关系，因为Engine完全可以独立存在，或者安装到其他的机械设备上。<br />
+<br />
+<strong><span style="font-size: medium;">参考资料</span>
+</strong>
+<br />
+1. 软件设计 Bridge模式（新的理解，新的参考）<br />
+&nbsp;&nbsp; http://humingke1984.blog.163.com/blog/static/34777159201062444653948/<br />
+2. 从桥接模式与策略模式谈起<br />
+&nbsp;&nbsp; http://www.blogjava.net/wangle/archive/2007/04/25/113545.html<br />
+3. Bridge模式学习笔记<br />
+&nbsp;&nbsp; http://blog.csdn.net/zjibo/archive/2009/09/10/4540030.aspx<br />
+4. 再论桥接模式（上）纸上谈兵<br />
+&nbsp;&nbsp; http://blog.csdn.net/jyk/archive/2009/12/04/4936430.aspx<br />
+5. Bridge模式，Decorator模式（转载）<br />
+&nbsp;&nbsp; http://www.360doc.com/content/08/0801/15/63912_1497477.shtml<br />
+</span>
+</p>
+</div>
+
+<div class="share_buttons" id="sharePanel"></div>
+<!--192.168.100.34-->
+<div class="article_next_prev">
+    <li class="prev_article"><span>上一篇：</span><a href="/superbeck/article/details/5956424">成为一名优秀程序员所需要知道的那些事</a></li>
+    <li class="next_article"><span>下一篇：</span><a href="/superbeck/article/details/5969948">VMware Player NAT模式无法自动获得IP地址的原因及解决方案（其中一个）</a></li>
+</div>
+
+
+    
+</div>
+<div id="ad_cen">
+<script type="text/javascript" >BAIDU_CLB_SLOT_ID = "117306";</script>
+<script type="text/javascript" src="http://cbjs.baidu.com/js/o.js"></script>
+</div>
+<script type="text/javascript">
+    //new Ad(4, 'ad_cen');
+</script>
+<div id="comment_title" class="panel_head">查看评论<a name="comments"></a></div>
+<div id="comment_list"></div>
+<div id="comment_bar"></div>
+<div id="comment_form"></div>
+<div class="announce">* 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+<script type="text/javascript">
+    var fileName = '5969884';
+    var commentscount = 2;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+<div id="ad_bot"></div>
+<script type="text/javascript">
+    new Ad(5, 'ad_bot');
+</script>
+<div id="report_dialog"></div>
+
+<div id="d-top" style="display:none;">
+<a id="d-top-a" href="#" title="回到顶部">
+<img src="http://static.blog.csdn.net/images/top.png" alt="TOP" /></a>
+</div>
+<script type="text/javascript">
+    $(function(){
+        var d_top=$('#d-top');
+        document.onscroll=function(){
+            var scrTop=(document.body.scrollTop||document.documentElement.scrollTop);
+            if(scrTop>500){
+                d_top.show();
+            }else{
+                d_top.hide();
+            }
+        }
+        $('#d-top-a').click(function(){
+            scrollTo(0,0);
+            this.blur();
+            return false;
+        });
+    });
+</script>
+
+<div class="clear"></div>
+</div>
+</div>
+
+<div id="side">
+<div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/superbeck" target="_blank">
+    <img src="http://avatar.csdn.net/5/C/A/1_superbeck.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/superbeck" class="user_name" target="_blank">superbeck</a></span>
+</div>
+<div class="interact">
+<a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+<a href="javascript:void(0);" class="letter" onclick="loginto(1)" title="[发私信]"></a>
+</div>
+<div id="blog_medal">
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>93912次</span></li>
+    <li>积分：<span>1765分</span></li>
+    <li>排名：<span>第5120名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>72篇</span></li>
+    <li>转载：<span>20篇</span></li>
+    <li>译文：<span>1篇</span></li>
+    <li>评论：<span>45条</span></li>
+</ul>
+</ul>
+</div>
+
+<div class="panel">
+<ul class="panel_body" style="padding:0;">
+<script type="text/javascript" src="http://cbjs.baidu.com/js/m.js"></script> 
+<script type="text/javascript"> 
+BAIDU_CLB_preloadSlots("724643","117306"); 
+</script>
+<script type="text/javascript">BAIDU_CLB_fillSlot("724643");</script> 
+</ul>
+</div>
+<div class="panel" id="panel_Search">
+    <ul class="panel_head"><span>文章搜索</span></ul>
+    <ul class="panel_body">
+        <form id="frmSearch" action="http://so.csdn.net/search" class="form_search" target="_blank">
+        <span><input id="inputSearch" type="text" class="blogsearch" title="请输入关键字" /></span>
+        <input id="btnSubmit" type="submit" value="搜索" title="search in blog" />
+        <input type="hidden" name="q" id="inputQ" />
+        <input type="hidden" name="t" value="blog" />
+        <a id="btnSearchBlog" target="_blank"></a>
+        </form>
+    </ul>
+</div><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/551445">Database</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/494146">eclipse</a><span>(7)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/207307">java</a><span>(27)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/417007">Life</a><span>(5)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/487521">notes开发</a><span>(2)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/590316">python</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/744229">ubuntu/linux</a><span>(0)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/708356">Velocity</a><span>(1)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/547684">Web开发</a><span>(22)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/412477">开发工具相关</a><span>(28)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/451648">开发杂想</a><span>(13)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/490099">设计/UML/MDA</a><span>(13)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/superbeck/article/category/473096">软件工程</a><span>(6)</span>
+</li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="http://blog.csdn.net/superbeck/article/month/2011/04">2011年04月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2011/02">2011年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/11">2010年11月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/10">2010年10月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/09">2010年09月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/07">2010年07月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/06">2010年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/05">2010年05月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/03">2010年03月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/02">2010年02月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2010/01">2010年01月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/11">2009年11月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/10">2009年10月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/09">2009年09月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/08">2009年08月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/07">2009年07月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/06">2009年06月</a><span>(9)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/05">2009年05月</a><span>(6)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/03">2009年03月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/02">2009年02月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2009/01">2009年01月</a><span>(4)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/12">2008年12月</a><span>(2)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/11">2008年11月</a><span>(5)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/10">2008年10月</a><span>(8)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/09">2008年09月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/08">2008年08月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2008/06">2008年06月</a><span>(3)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/11">2006年11月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/10">2006年10月</a><span>(1)</span></li><li><a href="http://blog.csdn.net/superbeck/article/month/2006/05">2006年05月</a><span>(1)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head"><span>阅读排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/superbeck/article/details/5721382" title="eclipse上的几个Velocity插件">eclipse上的几个Velocity插件</a><span>(7394)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4359870" title="Ant:给Ant脚本传递参数的最佳实践">Ant:给Ant脚本传递参数的最佳实践</a><span>(4790)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4446177" title="设计模式：简单工厂、工厂方法、抽象工厂之小结与区别">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a><span>(3877)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4799407" title="基于java的程序OutOfMemory问题的解决及Xms/Xmx/Xss的解释和应用">基于java的程序OutOfMemory问题的解决及Xms/Xmx/Xss的解释和应用</a><span>(3805)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3983671" title="程序员兼职创收的新方法 - 依托平台开发应用">程序员兼职创收的新方法 - 依托平台开发应用</a><span>(3587)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4532818" title="python学习——初次接触(python,wxpython,Boa,py2exe)">python学习——初次接触(python,wxpython,Boa,py2exe)</a><span>(3483)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3226709" title="一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识">一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识</a><span>(3171)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5325991" title="设计模式：Visitor模式">设计模式：Visitor模式</a><span>(2511)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247145" title="使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法">使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法</a><span>(2254)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247066" title="如何用Java实现MySQL数据库的备份和恢复">如何用Java实现MySQL数据库的备份和恢复</a><span>(2124)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/superbeck/article/details/4323861" title="StarUML: 插件加载失败的解决方法">StarUML: 插件加载失败的解决方法</a><span>(11)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4213095" title="使用jstl1.1，注意与1.0的区别">使用jstl1.1，注意与1.0的区别</a><span>(5)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4446177" title="设计模式：简单工厂、工厂方法、抽象工厂之小结与区别">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a><span>(5)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247925" title="displaytag的properties文件的汉化-displaytag_zh_CN.properties">displaytag的properties文件的汉化-displaytag_zh_CN.properties</a><span>(3)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/3226709" title="一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识">一次cygwin的绿化 - 顺便多学一些脚本/注册表的知识</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5325991" title="设计模式：Visitor模式">设计模式：Visitor模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5721382" title="eclipse上的几个Velocity插件">eclipse上的几个Velocity插件</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/4247145" title="使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法">使用Hibernate连接MySQL数据库发生closed.Connection问题的一种解决方法</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/5969884" title="设计模式：Bridge模式">设计模式：Bridge模式</a><span>(2)</span>
+</li>
+<li>
+<a href="/superbeck/article/details/2575212" title="浏览器的刷新和确定按钮的功能">浏览器的刷新和确定按钮的功能</a><span>(2)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend"></ul>
+</div>
+<script type="text/javascript">
+ new Ad(12, 'ad_commend');
+</script><div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+    <a href="/superbeck/article/details/4323861#comments">StarUML: 插件加载失败的解决方法</a>
+    <p style="margin:0px;"><a href="/zhanshanyou" class="user_name">zhanshanyou</a>:
+解决问题的好文章，多谢！
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5325991#comments">设计模式：Visitor模式</a>
+    <p style="margin:0px;"><a href="/qyongkang" class="user_name">qyongkang</a>:
+写的好，终于看懂了
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4247925#comments">displaytag的properties文件的汉化-displaytag_zh_CN.properties</a>
+    <p style="margin:0px;"><a href="/seeyou339621438" class="user_name">seeyou339621438</a>:
+嗯，我也是看了你的文章才解决了问题！非常感谢。
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5325991#comments">设计模式：Visitor模式</a>
+    <p style="margin:0px;"><a href="/sheismylife" class="user_name">sheismylife</a>:
+写的挺好。我已经快忘记Visitor了，看了你的UML图马上想起来了。
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/5721382#comments">eclipse上的几个Velocity插件</a>
+    <p style="margin:0px;"><a href="/Wuaner" class="user_name">Wuaner</a>:
+你说的 g &amp; s 上的 Veloeclipse，是完全一样的，没有任何区别，只是作者闲的没事同时上...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4213095#comments">使用jstl1.1，注意与1.0的区别</a>
+    <p style="margin:0px;"><a href="/usx09325_" class="user_name">usx09325_</a>:
+顶顶
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4446177#comments">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a>
+    <p style="margin:0px;"><a href="/lxxxxl" class="user_name">lxxxxl</a>:
+“简单工厂 ： 用来生产同一等级结构中的任意产品。（对于增加新的产品，无能为力）”我认为简单工厂模式...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/1344230#comments">eclipse中安装插件的几种方法</a>
+    <p style="margin:0px;"><a href="/bingyingao" class="user_name">bingyingao</a>:
+mark一下
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4446177#comments">设计模式：简单工厂、工厂方法、抽象工厂之小结与区别</a>
+    <p style="margin:0px;"><a href="/elance_123" class="user_name">elance_123</a>:
+文中提到的“产品类可以是多种形式，多层继承或者是单个类都是可以的”，是否可以解释一下“多层继承或者是...
+    </p>
+    </li>
+    <li>
+    <a href="/superbeck/article/details/4247066#comments">如何用Java实现MySQL数据库的备份和恢复</a>
+    <p style="margin:0px;"><a href="/mjm88132" class="user_name">mjm88132</a>:
+`111
+    </p>
+    </li>
+</ul>
+</div>
+<div id="custom_column_968473" class="panel">
+<ul class="panel_head"><span>useful link</span></ul>
+<ul class="panel_body">
+<ul><li><a href="www.download.com" target=_blank>免费软件(英文)</a></li><li><a href="www.open-open.com" target=_blank>开源大全</a></li><li><a href="www.sourceforge.net" target=_blank>source forge</a></li><li><a href="www.java2s.com" target=_blank>www.java2s.com</a></li><li><a href="http://www.w3schools.com/" target=_blank>http://www.w3schools.com/</a></li></ul>
+</ul>
+</div></div>
+<div class="clear"></div>
+</div>
+
+<div class="clear"></div>
+</div>
+
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js?v=1.1"></script>
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=129278"></script>
+
+<script type="text/javascript">
+document.write('<script type="text/javascript" src="http://csdnimg.cn/pubfooter/js/publib_footer.js?' + Math.floor(new Date()/120000).toString(36) + '="></'+'script>');
+</script>
+
+<script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js?v=1"></script>
+
+
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+
+<script type="text/javascript" src="http://zz.csdn.net/js/count.js"></script>
+
+</div>
+</body>
+</html>
